@@ -108,10 +108,10 @@ dplot(gene.dist,gene.hobj,ord="final",main="Golub AML/ALL Data (1999): Gene Dist
 In order to better understand the variability of the \Rfunction{hopach} clusters, we use the non-parametric bootstrap. The proportion of bootstrap resampled data sets that each gene falls into each of the clusters (fixed from the \Rfunction{hopach} clustering result) is an estimate of the membership of that gene in each cluster. This is a form of "fuzzy clustering". 
 
 <<bootstrap,eval=FALSE,echo=TRUE>>=
-bobj<-boothopach(golub.subset,gene.hobj,I=100)
+bobj<-boothopach(golub.subset,gene.hobj,B=100)
 @
 
-The argument \Rfunarg{I} controls the number of bootstrap resmapled data sets used. The default value is \texttt{I=1000}, which represents a balance between precision and speed. For this example, we use only \texttt{I=100} so that it will not run too long. The \Rfunction{boothopach} function still takes some time to run. The bootstrap is a powerful, but computationally intensive, method. The \Rfunction{bootplot} function makes a barplot of the bootstrap reappearance proportions (See Figure \ref{barplot}). 
+The argument \Rfunarg{B} controls the number of bootstrap resmapled data sets used. The default value is \texttt{B=1000}, which represents a balance between precision and speed. For this example, we use only \texttt{B=100} so that it will not run too long. The \Rfunction{boothopach} function still takes some time to run. The bootstrap is a powerful, but computationally intensive, method. The \Rfunction{bootplot} function makes a barplot of the bootstrap reappearance proportions (See Figure \ref{barplot}). 
 
 <<bootplot,fig=TRUE,prefix=FALSE,echo=TRUE,include=FALSE,eval=FALSE>>=
 bootplot(bobj,gene.hobj,ord="bootp",main="Golub AML/ALL Data (1999)",showclusters=FALSE)
