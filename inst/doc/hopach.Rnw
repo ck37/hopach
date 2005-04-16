@@ -3,7 +3,7 @@
 % likely to be overwritten.
 %
 % \VignetteIndexEntry{hopach}
-% \VignetteDepends{tools, cluster, Biobase}
+% \VignetteDepends{tools, cluster}
 % \VignetteKeywords{Expression Analysis, Clustering}
 % \VignettePackage{hopach}
 
@@ -65,14 +65,14 @@ An important goal with large-scale gene expression studies is to find biological
 
 To load the necessary packages and the Golub data set: 
 
-<<golub,eval=FALSE,echo=TRUE>>=
+<<golub,eval=TRUE,echo=TRUE,results=hide>>=
 library(hopach)
 data(golub)
 @
 
 Next, select a subset of interesting genes. Such a subset can be chosen in many ways, for example with the functions in the \Rpackage{genefilter} and \Rpackage{multtest} packages. For this analysis, we will simply take the 200 genes with highest variance across the arrays. In practice, one will typically use a larger data set. The small size was chosen here for demonstration purposes. 
 
-<<geneSelection,eval=FALSE,echo=TRUE>>=
+<<geneSelection,eval=TRUE,echo=TRUE>>=
 vars<-apply(golub,1,var)
 subset<-vars>quantile(vars,(nrow(golub)-200)/nrow(golub))
 golub.subset<-golub[subset,]
@@ -82,14 +82,14 @@ gnames.subset<-golub.gnames[subset,]
 
 It is useful to compute the distance matrix before running \Rfunction{hopach}, because the distance matrix may be needed later in the analysis. Having a copy in hand saves computation time, particularly with larger data sets. The \Rfunarg{cosangle} distance metric is often a good choice for clustering genes.
 
-<<distance,eval=FALSE,echo=TRUE>>=
+<<distance,eval=TRUE,echo=TRUE>>=
 gene.dist<-distancematrix(golub.subset,"cosangle")
 dim(gene.dist)
 @
 
 Now, run hopach. The algorithm will take some time to run.
 
-<<hopachGene,eval=FALSE,echo=TRUE>>=
+<<hopachGene,eval=TRUE,echo=TRUE>>=
 gene.hobj<-hopach(golub.subset,dmat=gene.dist)
 gene.hobj$clust$k  
 table(gene.hobj$clust$labels) 
@@ -99,7 +99,7 @@ gene.hobj$clust$sizes
 The rows and columns of the distance matrix can be ordered according to the order of the genes in the final level of the hierarchical tree. Genes close to each other in the tree are similarly expressed, so the ordered distance matrix shows the clustering structure (See Figure \ref{image}). Clusters of similarly expressed genes appear as blocks on the diagonal of the matrix. With the default colors, red represents small distance and white large distance.
 
 <<dplot,fig=TRUE,prefix=FALSE,echo=TRUE,include=FALSE,eval=FALSE>>=
-dplot(gene.dist,gene.hobj,ord="final",main="Golub AML/ALL Data (1999): Gene Distance Matrix",showclusters=FALSE)  #ordered distance matrix
+dplot(gene.dist,gene.hobj,ord="final",main="Golub AML/ALL Data (1999): Gene Distance Matrix",showclusters=FALSE)  
 @
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -107,7 +107,7 @@ dplot(gene.dist,gene.hobj,ord="final",main="Golub AML/ALL Data (1999): Gene Dist
 
 In order to better understand the variability of the \Rfunction{hopach} clusters, we use the non-parametric bootstrap. The proportion of bootstrap resampled data sets that each gene falls into each of the clusters (fixed from the \Rfunction{hopach} clustering result) is an estimate of the membership of that gene in each cluster. This is a form of "fuzzy clustering". 
 
-<<bootstrap,eval=FALSE,echo=TRUE>>=
+<<bootstrap,eval=TRUE,echo=TRUE>>=
 bobj<-boothopach(golub.subset,gene.hobj,B=100)
 @
 
@@ -128,7 +128,7 @@ table(golub.cl)
 
 We will ignore the labels, and perform unsupervised clustering of the arrays using \Rfunction{hopach}. This analysis method differs from classification, because the class labels are not used and the subset of genes has not been chosen to best discriminate between the two classes of arrays. Hence, we do not necessarily expect the clustering to reproduce the class labels. This exploratory approach allows us to see what patterns there are in the data without using any information besides the subset of gene expression measurements. Euclidean distance is often a good choice for clustering arrays.
 
-<<hopachArray,eval=FALSE,echo=TRUE>>=
+<<hopachArray,eval=TRUE,echo=TRUE>>=
 array.hobj<-hopach(t(golub.subset),d="euclid")
 array.hobj$clust$k
 @

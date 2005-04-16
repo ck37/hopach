@@ -14,6 +14,7 @@ boot2fuzzy<-function(data,bootobj,hopach.genes,hopach.arrays=NULL,file="hopach",
 		r.names<-dimnames(data)[[1]]
 	if(is.null(gene.names))
 		gene.names<-r.names
+	gene.names<-as.character(gene.names)
 	if(length(gene.names)!=p)
 		stop("Gene names and data dimensions do not match in boot2fuzzy()")
 	if(is.null(dimnames(data)[[2]]))

@@ -142,7 +142,7 @@ makeTree<-function(labels,ord,medoids,dist,side="GENE"){
 			children<-c(children,arrays[labels.d1==uchildren[j]])
 	}
 	ni<-length(children)
-	treematrix<-rbind(treematrix,c(paste("NODE",nodecount,"X",sep=""),0,mean(dissvector(as.matrix(dist))),-1,order(apply(dist,1,sum))[1],children,rep(NA,maxnode-ni)))
+	treematrix<-rbind(treematrix,c(paste("NODE",nodecount,"X",sep=""),0,mean(dissvector(as.matrix(dist))),-1,order(rowSums(dist))[1],children,rep(NA,maxnode-ni)))
 	treematrix$medoid<-paste(side,treematrix$medoid,"X",sep="")
 	return(treematrix[-1,-2])
 }
@@ -185,6 +185,7 @@ hopach2tree<-function(data,file="HOPACH",hopach.genes=NULL,hopach.arrays=NULL,di
 		array.wts<-rep(1,n)
 	if(is.null(gene.names))
 		gene.names<-dimnames(data.frame(data))[[1]]
+	gene.names<-as.character(gene.names)
 	if(length(array.wts)!=n)
 		stop("Array weights and data matrix dimensions do not match in hopach2tree()")
 	if(length(gene.wts)!=p)
