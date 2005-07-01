@@ -215,7 +215,7 @@ hopach2tree<-function(data,file="HOPACH",hopach.genes=NULL,hopach.arrays=NULL,di
 		cdt<-c("GID","UID","NAME","GWEIGHT",dimnames(data.frame(data))[[2]][col.ord])
 	}
 	else{
-		cat("no gene tree \n")
+		cat("Only one level in gene tree: no .gtr file created \n")
 		cdt<-c("UID","NAME","GWEIGHT",dimnames(data.frame(data))[[2]][col.ord])
 	}
 	cdtsize<-1
@@ -240,7 +240,7 @@ hopach2tree<-function(data,file="HOPACH",hopach.genes=NULL,hopach.arrays=NULL,di
 		cdtsize<-cdtsize+1
 	}
 	else
-		cat("no array tree \n")
+		cat("Only one level in array tree: no .atr file created \n")
 	if(digits(row.labels[1])>1)
 		write.table(matrix(rbind(cdt,c("EWEIGHT","","","",array.wts[col.ord]),cbind(paste("GENE",1:p,"X",sep="")[row.ord],dimnames(data.frame(data))[[1]][row.ord],gene.names[row.ord],gene.wts[row.ord],data[row.ord,col.ord])),nr=(cdtsize+p+1),dimnames=list(NULL,NULL)),paste(file,".cdt",sep=""),quote=FALSE,sep="\t",row.names=FALSE,col.names=FALSE)
 	else
