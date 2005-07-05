@@ -1,45 +1,3 @@
-#counts the number of digits in label
-#digits<-function(label){
-#	label<-label[1]
-#	count<-0
-#	while(label>=1){
-#		count<-count+1
-#		label<-label/10
-#	}
-#	return(count)
-#}
-#this function is in the hopach.R file
-
-#truncates labels to dig digits
-cutdigits<-function(labels,dig){
-	dl<-NULL
-	for(i in 1:length(labels)) 
-		dl[i]<-digits(labels[i])
-	df<-max(0,dl-dig)
-	trunc(labels/(10^df))		
-}
-
-#removes trailing zeros from labels
-cutzeros<-function(labels){
-	for(i in 1:length(labels)){
-		while(trunc(labels[i]/10)*10==labels[i]){
-			labels[i]<-labels[i]/10
-		}
-	}
-	return(labels)
-}
-
-#returns the number of non-zero digits in labels
-nonzeros<-function(labels){
-	for(i in 1:length(labels)){
-		while(trunc(labels[i]/10)*10==labels[i]){
-			labels[i]<-labels[i]/10
-		}
-		labels[i]<-digits(labels[i])
-	}
-	return(labels)	
-}
-
 #MakeTree: a function to make the .gtr (or .atr) file for genes (or arrays)
 # labels = the final labels from hopach(): $final$labels
 # ord = the order of the elements (corresponding to labels) in the .cdt file
@@ -126,7 +84,7 @@ makeTree<-function(labels,ord,medoids,dist,side="GENE"){
 					}
 				}
 				else{
-					treematrix$label[treematrix$label==uchildren]<-block[i,1]
+					treematrix$label[treematrix$label==uchildren]<-cutzeros(block[i,1])
 				}
 			}
 		}
