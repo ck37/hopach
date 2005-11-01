@@ -5,7 +5,7 @@ Title: Hierarchical Ordered Partitioning and Collapsing Hybrid
 Author: Katherine S. Pollard <kpollard@soe.ucsc.edu>, with Mark J. van
         der Laan <laan@stat.berkeley.edu>.
 Maintainer: Katherine S. Pollard <kpollard@soe.ucsc.edu>
-Depends: R (>= 1.8.0), cluster
+Depends: R (>= 1.8.0), cluster, Biobase
 Description: The HOPACH clustering algorithm builds a hierarchical
         tree of clusters by recursively partitioning a data set, while
         ordering and possibly collapsing clusters at each level. The
