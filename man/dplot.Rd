@@ -44,7 +44,7 @@ van der Laan, M.J. and Pollard, K.S. A new algorithm for hybrid hierarchical clu
 
 \author{Katherine S. Pollard <kpollard@soe.ucsc.edu> and Mark J. van der Laan <laan@stat.berkeley.edu>}
 
-\notes{Thank you to Sandrine Dudoit <sandrine@stat.berkeley.edu> for her input.}
+\note{Thank you to Sandrine Dudoit <sandrine@stat.berkeley.edu> for her input.}
 
 \seealso{\code{\link{distancematrix}}, \code{\link{hopach}}, \code{\link{image}}}
 

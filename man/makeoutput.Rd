@@ -38,7 +38,7 @@ van der Laan, M.J. and Pollard, K.S. A new algorithm for hybrid hierarchical clu
 
 \author{Katherine S. Pollard <kpollard@soe.ucsc.edu>}
 
-\notes{Thank you to Karen Vranizan <vranizan@uclink.berkeley.edu> for helping to write this function.}
+\note{Thank you to Karen Vranizan <vranizan@uclink.berkeley.edu> for helping to write this function.}
 
 \seealso{\code{\link{hopach}}, \code{\link{boothopach}}, \code{\link{bootmedoids}}}
 

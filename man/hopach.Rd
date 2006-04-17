@@ -178,7 +178,7 @@ Kaufman, L. and Rousseeuw, P.J. (1990). Finding Groups in Data: An Introduction 
 
 \author{Katherine S. Pollard <kpollard@soe.ucsc.edu> and Mark J. van der Laan <laan@stat.berkeley.edu>}
 
-\notes{Thank you to Karen Vranizan <vranizan@uclink.berkeley.edu> for her input
+\note{Thank you to Karen Vranizan <vranizan@uclink.berkeley.edu> for her input
 }
 
 \seealso{\code{\link{distancematrix}}, \code{\link{labelstomss}}, \code{\link{boothopach}}, \code{pam}, \code{makeoutput}}
