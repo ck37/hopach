@@ -17,4 +17,5 @@ Description: The HOPACH clustering algorithm builds a hierarchical
 License: GPL version 2 or newer
 URL: http://www.r-project.org, http://www.stat.berkeley.edu/~laan/,
         http://docpollard.com/
+biocViews: Clustering
 
