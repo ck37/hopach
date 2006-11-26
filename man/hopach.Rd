@@ -100,6 +100,12 @@ the optimal number of children at each node, (ii) decide which pairs of clusters
 collapse at each level, and (iii) identify the first level of the tree with maximally
 homogeneous clusters. In each case, the goal is to minimize MSS, which is a measure of
 cluster heterogeneity described in http://www.bepress.com/ucbbiostat/paper107/. 
+
+Note that the distances used for clustering in hopach are the square root 
+of the usual distance, for example as computed by the dist() function. 
+Typically, this transformation makes the dissimilarity correspond more 
+closely with the norm. See ? distancematrix(). 
+
 }
 
 \value{A list with the following components:
