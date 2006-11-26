@@ -15,7 +15,8 @@ function \code{distancevector} is applied to a matrix and a vector
 to compute the pair wise distances between each row of the matrix and 
 the vector. Both functions allow different choices of distance metric.
 The functions \code{dissmatrix} and \code{dissvector} allow one to 
-convert between a distance matrix and a vector of the upper triangle. The function \code{vectmatrix} is used internally.
+convert between a distance matrix and a vector of the upper triangle. The 
+function \code{vectmatrix} is used internally.
 }
 
 \usage{
@@ -46,6 +47,12 @@ vectmatrix(index, p)
 	a distance matrix, stored by rows.}
   \item{index}{index in a distance vector, like that returned by \code{dissvector}.}
   \item{p}{number of elements, e.g. the number of rows in a distance matrix.}
+}
+
+\details{
+These functions return the square root of the usual distance, for example
+as computed by the dist() function. Typically, this transformation makes
+the dissimilarity correspond more closely with the norm.
 }
 
 \value{
