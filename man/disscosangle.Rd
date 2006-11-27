@@ -58,9 +58,9 @@ For cosine-angle and correlation (and their absolute values) these
 functions return the square root of the usual distance, for example
 as computed by the dist() function. Typically, this transformation makes
 the dissimilarity correspond more closely with the norm. Also, the 
-Euclidean distance is standardized by the sample size, so that the values
-produced are equal to the values from the dist() function divided by
-sqrt(n).
+Euclidean distance is standardized by the sample size (n), so that the 
+values produced are equal to the values from the dist() function divided 
+by sqrt(n).
 }
 
 \value{
