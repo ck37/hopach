@@ -18,7 +18,7 @@ the tree down to produce a final ordered list of the elements.
 \usage{
 hopach(data, dmat = NULL, d = "cosangle", clusters = "best", K = 15, 
 kmax = 9, khigh = 9, coll = "seq", newmed = "medsil", mss = "med", 
-impr = 0, initord = "co", ord = "own")
+impr = 0, initord = "co", ord = "own", verbose=FALSE)
 }
 
 \arguments{
@@ -79,6 +79,7 @@ impr = 0, initord = "co", ord = "own")
 	from cluster medoid with medoid first, i.e. leftmost), "neighbor" (order based on
 	distance to the medoid of the next cluster to the right), or "co" (maximize
 	correlation ordering - can be slow for large clusters!).}
+  \item{verbose}{If \code{TRUE} then verbose output is printed.}
 }
 
 \details{

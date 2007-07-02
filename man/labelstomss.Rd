@@ -38,7 +38,11 @@ silcheck(data, kmax = 9, diss = FALSE, echo = FALSE, graph = FALSE)
 	between all elements. All values must be numeric and missing values
 	are not allowed.}
   \item{medoids}{a vector indicating the rows/cols of \code{dist} that are the cluster medoids, i.e. profiles (or centroids) for each cluster.}
-  \item{data}{a data matrix. Each column corresponds to an observation, and each row corresponds to a variable. In the gene expression context, observations are arrays and variables are genes. All values must be numeric. Missing values are ignored. In \code{silcheck}, \code{data} may also be a distance matrix or dissimilarity object if the argument \code{diss=TRUE}.}
+  \item{data}{a data matrix. Each column corresponds to an observation, and 
+  each row corresponds to a variable. In the gene expression context, 
+  observations are arrays and variables are genes. All values must be numeric. 
+  Missing values are ignored. In \code{silcheck}, \code{data} may also be a 
+  distance matrix or dissimilarity object if the argument \code{diss=TRUE}.}
   \item{khigh}{integer between 1 and 9 specifying the maximum number of 
 	children for each cluster when computing MSS.}
   \item{kmax}{integer between 1 and 9 specifying the maximum number of clusters to consider. Can be different from khigh, though typically these are the same value.}
@@ -55,17 +59,21 @@ silcheck(data, kmax = 9, diss = FALSE, echo = FALSE, graph = FALSE)
   \item{force}{indicator of whether to require at least 2 clusters, if FALSE (default), one cluster is considered.}
   \item{echo}{indicator of whether to print the selected number of clusters and corresponding MSS.}
   \item{graph}{indicator of whether to generate a plot of MSS (or average silhouette in \code{silcheck}) versus number of clusters.}
-  \item{diss}{idicator of whether \code{data} is a dissimilarity matrix (or dissimilarity object), as in the \code{pam} function of the \code{cluster} package. If TRUE then \code{data} will be considered as a dissimilarity matrix. If FALSE, then \code{data} will be considered as a data matrix (observations by variables).} 
+  \item{diss}{indicator of whether \code{data} is a dissimilarity matrix 
+  (or dissimilarity object), as in the \code{pam} function of the 
+  \code{cluster} package. If \code{TRUE} then \code{data} will be considered 
+  as a dissimilarity matrix. If \code{FALSE}, then \code{data} will be 
+  considered as a data matrix (observations by variables).} 
 }
 
 \details{
-	The Median (and mean) Split Silhouette (MSS) criteria is defined in 
-	paper107 listed in the references (below). This criteria is based on the
-	criteria function 'silhouette', proposed by Kaufman and Rousseeuw (1990).
-	While average silhouette is a good global measure of cluster strength, MSS
-	was developed to be more "aggressive" for finding small, homogeneous clusters
-	in large data sets. MSS is a measure of average cluster homogeneity. The
-	Median version is more robust than the Mean.
+The Median (and mean) Split Silhouette (MSS) criteria is defined in 
+paper107 listed in the references (below). This criteria is based on the
+criteria function 'silhouette', proposed by Kaufman and Rousseeuw (1990).
+While average silhouette is a good global measure of cluster strength, MSS
+was developed to be more "aggressive" for finding small, homogeneous clusters
+in large data sets. MSS is a measure of average cluster homogeneity. The
+Median version is more robust than the Mean.
 }
 
 \value{

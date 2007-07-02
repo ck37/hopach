@@ -165,58 +165,79 @@ labelstomss<-function(labels,dist,khigh=9,within="med",between="med",hierarchica
 #c. optimizing number of clusters with average silhouette or mss
 
 #silcheck (silhouettes)
-silcheck<-function(data,kmax=9,diss=FALSE,echo=FALSE,graph=FALSE){
-	sil<-NULL
-	m<-min(kmax,max((!diss)*(dim(data)[1]-1),(diss)*(0.5*(sqrt(1+8*length(data))-1)),na.rm=TRUE))
-	if(m<2)
-		out<-c(1,NA)
-	else{
-		for(i in 1:(m-1))
-			sil[i]<-pam(data,k=(i+1),diss=diss)$silinfo$avg.width
-		if(echo)
-			cat("best k = ",order(sil)[length(sil)]+1,", sil(k) = ",round(max(sil),4),"\n")
-		if(graph){
-			plot(2:m,sil,type="n",xlab="Number of Clusters",ylab="Average Silhouette")
-			text(2:m,sil,2:m)
-		}
-		out<-c(order(sil)[length(sil)]+1,max(sil))
-	}
-	return(out)
+
+silcheck<-function(data, kmax=9, diss=FALSE, echo=FALSE, graph=FALSE)
+{
+    if( !diss ) {
+        if( inherits(data, "dist"))
+            stop("data argument is a dist object, but diss is FALSE")
+        if( is.matrix(data) && (nrow(data) == ncol(data) ) )
+            warning("data argument is square, could be a dissimilarity")
+    }
+    if( diss && is.matrix(data) && nrow(data) != ncol(data) )
+        stop("should be a dissimilarity matrix - but is not square")
+    
+    sil<-NULL
+    m<-min(kmax, max((!diss)*(dim(data)[1]-1),
+                     (diss)*(0.5*(sqrt(1+8*length(data))-1)),
+                     na.rm=TRUE)) 
+    if(m<2)
+        out<-c(1,NA)
+    else{
+        for(i in 1:(m-1))
+            sil[i]<-pam(data, k=(i+1), diss=diss)$silinfo$avg.width
+        if(echo)
+            cat("best k = ", order(sil)[length(sil)]+1, ", sil(k) = ",
+                round(max(sil),4), "\n")
+        if(graph){
+            plot(2:m, sil, type="n", xlab="Number of Clusters",
+                 ylab="Average Silhouette")
+            text(2:m, sil ,2:m)
+        }
+        out<-c(order(sil)[length(sil)]+1,max(sil))
+    }
+    return(out)
 }
 
 #msscheck (mss)
-msscheck<-function(dist,kmax=9,khigh=9,within="med",between="med",force=FALSE,echo=FALSE,graph=FALSE){
-	if(!is.matrix(dist))
-		stop("First arg to msscheck() must be a matrix")
-	p<-length(dist[1,])
-	if(p!=length(dist[,1]))
-		stop("First arg to msscheck() not a square matrix")
-	if(p<3)
-		out<-c(1,NA)
-	else{
-		dvec<-dissvector(dist)
-		kmax<-min(kmax,p-1,na.rm=TRUE)
-		if(force)
-			mss<-0
-		else
-			mss<-labelstomss(rep(1,p),dist,khigh,within,between)
-		for(k in 2:kmax)
-			mss[k]<-labelstomss(pam(dvec,k,diss=TRUE)$clust,dist,khigh,within,between)
-		shift<-0
-		if(force){
-			mss<-mss[-1]
-			shift<-1
-		}
-		if(echo)
-			cat("best k = ",order(mss)[1]+shift,", mss(k) = ",round(min(mss),4),"\n")
-		if(graph){
-			kmin<-ifelse(force,2,1)
-			plot(kmin:kmax,mss,type="n",xlab="Number of Clusters",ylab="MSS")
-			text(kmin:kmax,mss,kmin:kmax)
-		}
-		out<-c(order(mss)[1]+shift,min(mss))
-	}
-	return(out)
+msscheck<-function(dist, kmax=9, khigh=9, within="med", between="med",
+                   force=FALSE, echo=FALSE, graph=FALSE){
+    if( inherits(dist, "dist") )
+        dist = as.matrix(dist)
+    if(!is.matrix(dist))
+        stop("First arg to msscheck must be a matrix")
+    p<-length(dist[1,])
+    if(p!=length(dist[,1]))
+        stop("First arg to msscheck is not a square matrix")
+    if(p<3)
+        out<-c(1,NA)
+    else{
+        dvec<-dissvector(dist)
+        kmax<-min(kmax,p-1,na.rm=TRUE)
+        if(force)
+            mss<-0
+        else
+            mss<-labelstomss(rep(1,p),dist,khigh,within,between)
+        for(k in 2:kmax)
+            mss[k]<-labelstomss(pam(dvec, k, diss=TRUE)$clust, dist,
+                                khigh, within, between)
+        shift<-0
+        if(force){
+            mss<-mss[-1]
+            shift<-1
+        }
+        if(echo)
+            cat("best k = ", order(mss)[1]+shift, ", mss(k) = ",
+                round(min(mss),4), "\n")
+        if(graph){
+            kmin<-ifelse(force,2,1)
+            plot(kmin:kmax, mss, type="n" ,xlab="Number of Clusters",
+                 ylab="MSS") 
+            text(kmin:kmax,mss,kmin:kmax)
+        }
+        out<-c(order(mss)[1]+shift,min(mss))
+    }
+    return(out)
 }
 
 #2. Utility functions
@@ -490,7 +511,10 @@ orderelements<-function(level,data,rel="own",d="cosangle",dmat=NULL){
 	# for mean split silhouette
 	#ord is an indicator of how to order the clusters. choices are to maximize 
 	# correlation ordering ("co") or to build a tree of cluster medoids ("clust")
-mssinitlevel<-function(data,kmax=9,khigh=9,d="cosangle",dmat=NULL,within="med",between="med",ord="co"){
+mssinitlevel<-function(data, kmax=9, khigh=9, d="cosangle", dmat=NULL,
+                       within="med", between="med", ord="co",
+                       verbose=FALSE)
+{
 	if(!is.matrix(data))
 		stop("First arg to mssinitlevel() must be a matrix")
 	p<-length(data[,1])
@@ -502,6 +526,7 @@ mssinitlevel<-function(data,kmax=9,khigh=9,d="cosangle",dmat=NULL,within="med",b
 		stop("Distance matrix must be a square matrix in mssinitlevel()")
 	m<-msscheck(dmat,kmax,khigh,within,between)
 	if(m[1]==1){
+            if(verbose)
 		cat("No strong evidence for clusters in the first level - \n continuing to split root node anyway. \n")
 		m<-msscheck(dmat,kmax,khigh,within,between,force=TRUE)
 	}
@@ -805,20 +830,26 @@ mssmulticollap<-function(data,level,khigh,d="cosangle",dmat=NULL,newmed="medsil"
 	# for mean split silhouette.
 	#impr is a margin of improvement required to accept a collapse with msscollap and
 	# mssmulticollap. the default is impr=0.
-mssrundown<-function(data,K=16,kmax=9,khigh=9,d="cosangle",dmat=NULL,initord="co",coll="seq",newmed="medsil",stop=TRUE,finish=FALSE,within="med",between="med",impr=0){
+
+mssrundown<-function(data, K=16, kmax=9, khigh=9, d="cosangle",
+	dmat=NULL, initord="co", coll="seq", newmed="medsil", stop=TRUE,
+	finish=FALSE, within="med",between="med",impr=0, verbose=FALSE) 
+{ 
 	if(!is.matrix(data))
 		stop("First arg to mssrundown() must be a matrix")
 	if(!is.matrix(dmat))
                 dmat<-distancematrix(data,d)
-	bestlevel<-level<-mssinitlevel(data,kmax,khigh,d,dmat,within,between,initord)
+	bestlevel<-level<-mssinitlevel(data, kmax, khigh, d, dmat,
+                                       within, between, initord, verbose)
 	bestmss<-mss<-labelstomss(level[[4]],dmat,khigh,within,between)
 	bestl<-l<-1
 	ind<-0
-	cat("Searching for main clusters... \n")
+        if(verbose)
+            cat("Searching for main clusters... \n")
 	if(level[[5]]==1)
 		return(level)
 	while((l<=K) && (ind==0)){
-		cat("Level ",l,"\n")
+		if(verbose) cat("Level ",l,"\n")
 		if(coll=="seq")	
 			levelc<-msscollap(data,level,khigh,d,dmat,newmed,within,between,impr)
 		if(coll=="all") 
@@ -846,21 +877,27 @@ mssrundown<-function(data,K=16,kmax=9,khigh=9,d="cosangle",dmat=NULL,initord="co
 			}
 		}
 	}
-	cat("Identified",bestlevel[[1]]," main clusters in level",bestl,"with MSS =",bestmss,"\n")
+        if(verbose)
+            cat("Identified", bestlevel[[1]],
+                " main clusters in level",
+                bestl, "with MSS =",bestmss,"\n")
 	return(bestlevel)
 }
 
-msscomplete<-function(level,data,K=16,khigh=9,d="cosangle",dmat=NULL,within="med",between="med"){
+msscomplete<-function(level, data, K=16, khigh=9, d="cosangle",
+	dmat=NULL, within="med", between="med", verbose=FALSE)
+{
 	if(!is.matrix(data))
 		stop("First arg to msscomplete() must be a matrix")
 	if(!is.matrix(dmat))
                 dmat<-distancematrix(data,d)
 	count<-digits(level[[4]][1])
-	cat("Running down without collapsing from Level",count,"\n")
+        if(verbose)
+            cat("Running down without collapsing from Level",count,"\n")
 	while((max(level[[3]])>3) & (count<K)){
 		level<-newnextlevel(data,level,dmat,2,khigh)
 		count<-count+1
-		cat("Level",count,"\n")
+                if(verbose) cat("Level",count,"\n")
 	}
 	return(level)
 }
@@ -1035,8 +1072,11 @@ newsplitcluster<-function(clust1,l1,id1,klow=2,khigh=2,medoid1,med2dist,right,di
 	# the first level or "clust" if clsutering the medoids is used.
 	#ord determines how elements are ordered within clusters: "co" is 
 	# using improveordering(), "own" is distance to their own medoid, and "nieghbor"
-	# is distance to the neighboring medoid (to the right). 
-hopach<-function(data,dmat=NULL,d="cosangle",clusters="best",K=15,kmax=9,khigh=9,coll="seq",newmed="medsil",mss="med",impr=0,initord="co",ord="own"){
+	# is distance to the neighboring medoid (to the right).
+
+hopach<-function(data, dmat=NULL, d="cosangle", clusters="best", K=15,
+                 kmax=9, khigh=9, coll="seq", newmed="medsil",
+                 mss="med", impr=0,initord="co",ord="own", verbose=FALSE){
 	if(inherits(data,"exprSet")) 
 		data<-exprs(data)
 	data<-as.matrix(data)
@@ -1049,19 +1089,28 @@ hopach<-function(data,dmat=NULL,d="cosangle",clusters="best",K=15,kmax=9,khigh=9
 		warning("K set to 1 - can't do less than 1 level")
 	}
 	if(clusters!="none"){
-		cuttree<-mssrundown(data,K,kmax,khigh,d,dmat,initord,coll,newmed,stop=(clusters=="greedy"),finish=TRUE,within=mss,between=mss,impr)
+		cuttree<-mssrundown(data, K, kmax, khigh, d, dmat,
+                                    initord, coll, newmed,
+                 stop=(clusters=="greedy"), finish=TRUE, within=mss,
+                                    between=mss, impr, verbose) 
 		if(cuttree[[1]]>1) 
 			cutord<-orderelements(cuttree,data,rel=ord,d,dmat)[[2]]
 		else 
 			cutord<-NULL
 		out1<-list(k=cuttree[[1]],medoids=cuttree[[2]],sizes=cuttree[[3]],labels=cuttree[[4]],order=cutord)
-		finaltree<-msscomplete(cuttree,data,K,khigh,d,dmat,within=mss,between=mss)
+		finaltree<-msscomplete(cuttree, data, K, khigh, d,
+                 dmat, within=mss, between=mss, verbose)
 	}
 	else{
 		out1<-NULL
-		finaltree<-msscomplete(mssinitlevel(as.matrix(data),kmax,khigh,d,dmat,within=mss,between=mss,initord),data,K,khigh,d,dmat,within=mss,between=mss)
+		finaltree<-msscomplete(mssinitlevel(as.matrix(data),
+                 kmax, khigh, d, dmat, within=mss, between=mss,
+                 initord), data, K, khigh, d, dmat, within=mss,
+                 between=mss, verbose)
 	}
 	dimnames(finaltree[[6]])<-list(NULL,c("label","medoid"))
-	out2<-list(labels=finaltree[[4]],order=orderelements(finaltree,data,rel=ord,d,dmat)[[2]],medoids=finaltree[[6]])
-	return(list(clustering=out1,final=out2,call=match.call(),metric=d))
+	out2<-list(labels=finaltree[[4]],
+                 order=orderelements(finaltree, data, rel=ord, d,
+                 dmat)[[2]], medoids=finaltree[[6]])
+	return(list(clustering=out1, final=out2, call=match.call(), metric=d))
 }
