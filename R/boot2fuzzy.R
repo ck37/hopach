@@ -1,7 +1,7 @@
 boot2fuzzy<-function(data,bootobj,hopach.genes,hopach.arrays=NULL,file="hopach",clust.wts=NULL,gene.wts=NULL,array.wts=NULL,gene.names=NULL){
 	olddig<-options("digits")$digits
 	options(digits=10)
-	if(inherits(data,"exprSet")) 
+	if(inherits(data,"ExpressionSet")) 
 		data<-exprs(data)
 	data<-as.matrix(data)
 	p<-length(data[,1])

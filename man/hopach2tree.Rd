@@ -15,11 +15,10 @@ dist.genes = NULL, dist.arrays = NULL, d.genes = "cosangle",
 d.arrays = "euclid", gene.wts = NULL, array.wts = NULL, gene.names = NULL)
 
 makeTree(labels, ord, medoids, dist, side = "GENE")
-
 }
 
 \arguments{
-  \item{data}{data matrix, data frame or exprSet of gene expression measurements. Each column corresponds to an array, and each row corresponds to a gene. All values must be numeric. Missing values are ignored.}
+  \item{data}{data matrix, data frame or \code{ExpressionSet} of gene expression measurements. Each column corresponds to an array, and each row corresponds to a gene. All values must be numeric. Missing values are ignored.}
   \item{file}{name for the output files (the extensions .cdt, .gtr and .atr will be added).}
   \item{hopach.genes}{output of the \code{hopach} function applied to genes (rows of \code{data}. If only arrays are clustered, hopach.genes can be NULL. There must be at least K=2 levels in the hopach final tree (ie: hopach.genes$final$labels greater than 1 digit) for a gtr file to be generated.}
   \item{hopach.arrays}{optional output of the \code{hopach} function applied to arrays (columns of \code{data}. There must be at least K=2 levels in the hopach final tree (ie: hopach.arrays$final$labels greater than 1 digit) for an atr file to be generated.}
@@ -44,7 +43,6 @@ The function \code{makeTree} is called internally by \code{hopach2tree} to make 
 }
 
 \references{
-
 van der Laan, M.J. and Pollard, K.S. A new algorithm for hybrid hierarchical clustering with visualization and the bootstrap. Journal of Statistical Planning and Inference, 2003, 117, pp. 275-303.
 
 \url{http://www.stat.berkeley.edu/~laan/Research/Research_subpages/Papers/hopach.pdf}
@@ -61,7 +59,6 @@ The MapleTree software can be downloaded from: http://sourceforge.net/projects/m
 \seealso{\code{\link{hopach}}, \code{\link{boothopach}}, \code{\link{bootmedoids}}, \code{\link{boot2fuzzy}}}
 
 \examples{
-
 #25 variables from two groups with 3 observations per variable
 mydata<-rbind(cbind(rnorm(10,0,0.5),rnorm(10,0,0.5),rnorm(10,0,0.5)),cbind(rnorm(15,5,0.5),rnorm(15,5,0.5),rnorm(15,5,0.5)))
 dimnames(mydata)<-list(paste("Var",1:25,sep=""),paste("Exp",1:3,sep=""))
@@ -72,7 +69,6 @@ clustresult<-hopach(mydata,dmat=mydist)
 
 #write MapleTree files
 hopach2tree(mydata,hopach.genes=clustresult,dist.genes=mydist)
-
 }
 
 \keyword{cluster}

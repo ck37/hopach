@@ -1077,7 +1077,7 @@ newsplitcluster<-function(clust1,l1,id1,klow=2,khigh=2,medoid1,med2dist,right,di
 hopach<-function(data, dmat=NULL, d="cosangle", clusters="best", K=15,
                  kmax=9, khigh=9, coll="seq", newmed="medsil",
                  mss="med", impr=0,initord="co",ord="own", verbose=FALSE){
-	if(inherits(data,"exprSet")) 
+	if(inherits(data,"ExpressionSet")) 
 		data<-exprs(data)
 	data<-as.matrix(data)
 	if(K>15){

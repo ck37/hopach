@@ -110,7 +110,7 @@ makeTree<-function(labels,ord,medoids,dist,side="GENE"){
 hopach2tree<-function(data,file="HOPACH",hopach.genes=NULL,hopach.arrays=NULL,dist.genes=NULL,dist.arrays=NULL,d.genes="cosangle",d.arrays="euclid",gene.wts=NULL,array.wts=NULL,gene.names=NULL){
 	olddig<-options("digits")$digits
 	options(digits=10)
-	if(inherits(data,"exprSet")) 
+	if(inherits(data,"ExpressionSet")) 
 		data<-exprs(data)
 	data<-as.matrix(data)
 	if(!is.matrix(data))

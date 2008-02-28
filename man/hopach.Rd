@@ -22,7 +22,7 @@ impr = 0, initord = "co", ord = "own", verbose=FALSE)
 }
 
 \arguments{
-  \item{data}{data matrix, data frame or exprSet of gene expression measurements. Typically, each column corresponds to an array, and each row corresponds to a gene. For clustering arrays, the arrays appear in the rows and the genes in the columns. All values must be numeric. Missing values are ignored.}
+  \item{data}{data matrix, data frame or \code{ExpressionSet} of gene expression measurements. Typically, each column corresponds to an array, and each row corresponds to a gene. For clustering arrays, the arrays appear in the rows and the genes in the columns. All values must be numeric. Missing values are ignored.}
   \item{dmat}{matrix of pair wise distances between all genes (arrays). All values must be
 	numeric, and missing values are not allowed. If NULL, this matrix is computed 
 	using the metric specified by \code{d}. If a matrix is provided, the user is
@@ -108,8 +108,7 @@ of the usual distances. Typically, this transformation makes the
 dissimilarity correspond more closely with the norm. Also, the 
 Euclidean distance is standardized by the sample size, so that the values 
 produced are equal to the values from the dist() function divided by 
-sqrt(n). See ? distancematrix(). 
-
+sqrt(n). See ? distancematrix().
 }
 
 \value{A list with the following components:
@@ -173,7 +172,6 @@ sqrt(n). See ? distancematrix().
 }
 
 \references{
-
 van der Laan, M.J. and Pollard, K.S. A new algorithm for hybrid hierarchical clustering with visualization and the bootstrap. Journal of Statistical Planning and Inference, 2003, 117, pp. 275-303.
 
 \url{http://www.stat.berkeley.edu/~laan/Research/Research_subpages/Papers/hopach.pdf}
@@ -183,7 +181,6 @@ van der Laan, M.J. and Pollard, K.S. A new algorithm for hybrid hierarchical clu
 \url{http://www.stat.berkeley.edu/~laan/Research/Research_subpages/Papers/jsmpaper.pdf}
 
 Kaufman, L. and Rousseeuw, P.J. (1990). Finding Groups in Data: An Introduction to Cluster Analysis. Wiley, New York.
-
 }
 
 \author{Katherine S. Pollard <kpollard@soe.ucsc.edu> and Mark J. van der Laan <laan@stat.berkeley.edu>}
@@ -194,7 +191,6 @@ Kaufman, L. and Rousseeuw, P.J. (1990). Finding Groups in Data: An Introduction 
 \seealso{\code{\link{distancematrix}}, \code{\link{labelstomss}}, \code{\link{boothopach}}, \code{pam}, \code{makeoutput}}
 
 \examples{
-
 #25 variables from two groups with 3 observations per variable
 mydata<-rbind(cbind(rnorm(10,0,0.5),rnorm(10,0,0.5),rnorm(10,0,0.5)),cbind(rnorm(15,5,0.5),rnorm(15,5,0.5),rnorm(15,5,0.5)))
 dimnames(mydata)<-list(paste("Var",1:25,sep=""),paste("Exp",1:3,sep=""))
@@ -214,7 +210,6 @@ orderonly<-hopach(mydata,clusters="none",dmat=mydist)
 
 #cluster the columns (rather than rows)
 colresult<-hopach(t(mydata),dmat=distancematrix(t(mydata),d="euclid"))
-
 }
 
 \keyword{cluster}

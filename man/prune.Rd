@@ -12,7 +12,7 @@ prune(data,hobj,level,dmat=NULL,ord="own")
 }
 
 \arguments{
-  \item{data}{data matrix, data frame or exprSet of gene expression measurements. Typically, each column corresponds to an array, and each row corresponds to a gene. For clustering arrays, the arrays appear in the rows and the genes in the columns. All values must be numeric. Missing values are ignored.}
+  \item{data}{data matrix, data frame or \code{ExpressionSet} of gene expression measurements. Typically, each column corresponds to an array, and each row corresponds to a gene. For clustering arrays, the arrays appear in the rows and the genes in the columns. All values must be numeric. Missing values are ignored.}
   \item{hobj}{output of the \code{hopach} function.}
   \item{level}{an integer specifying the level to which the tree should be pruned - can be greater than or less than the level with the main clusters.}
   \item{dmat}{matrix of pair wise distances between all genes (arrays). All values must be numeric. If NULL, this matrix is computed using the metric specified by the 'metric' given in hobj. If a matrix is provided, the user is responsible for ensuring that the metric used agrees with that used in computing hobj.}
@@ -22,7 +22,6 @@ prune(data,hobj,level,dmat=NULL,ord="own")
 \value{A list with the same components as are returned by the \code{hopach} function. The clustering component now contains the specified level instead of the main clusters.}
 
 \references{
-
 van der Laan, M.J. and Pollard, K.S. A new algorithm for hybrid hierarchical clustering with visualization and the bootstrap. Journal of Statistical Planning and Inference, 2003, 117, pp. 275-303.
 
 \url{http://www.stat.berkeley.edu/~laan/Research/Research_subpages/Papers/hopach.pdf}
@@ -43,4 +42,3 @@ level2$clustering$k
 
 \keyword{cluster}
 \keyword{multivariate}
-

@@ -1,7 +1,7 @@
 makeoutput<-function(data,hopachobj,bootobj=NULL,file="HOPACH.out",gene.names=NULL){
 	olddig<-options("digits")$digits
 	options(digits=16)
-	if(inherits(data,"exprSet")) 
+	if(inherits(data,"ExpressionSet")) 
 		data<-exprs(data)
 	data<-as.matrix(data)
 	p<-nrow(data)
