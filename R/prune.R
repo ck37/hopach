@@ -2,7 +2,7 @@
 # can be lower or higher than main clusters
 prune<-function(data,hobj,level,dmat=NULL,ord="own"){
 	if(inherits(data,"ExpressionSet"))
-        data<-exprs(data)
+                data<-exprs(data)
 	data<-as.matrix(data)
 	if(round(level)!=level)
 		stop("level must be an integer")

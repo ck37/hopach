@@ -4,6 +4,7 @@
 # medoids = the final medoids matrix from hopach(): $final$medoids
 # dist = the corresponding distance matrix
 # side = dimension clustered: "ARRY" or "GENE" (default).
+
 makeTree<-function(labels,ord,medoids,dist,side="GENE"){
 	if((!is.vector(labels) | !is.numeric(labels)))
 		stop("First arg to makeTree() must be a numeric vector")
@@ -11,8 +12,10 @@ makeTree<-function(labels,ord,medoids,dist,side="GENE"){
 		stop("Second arg to makeTree() must be a matrix")
 	if(length(medoids[1,])!=2)
 		stop("Second arg to makeTree() must have 2 columns")
-	if(!is.matrix(dist))
-		stop("Third arg to makeTree() must be a matrix")
+	if(is.matrix(dist))
+		dist <- as.hdist(dist) 
+	if(!is.hdist(dist))
+		stop("Third arg to makeTree() must be a matrix, or a hdist object")
 	if(length(labels)!=length(dist[1,]))
 		stop("Labels and distance matrix dimensions do not agree in makeTree()")
 	labels<-labels[ord]
@@ -50,7 +53,8 @@ makeTree<-function(labels,ord,medoids,dist,side="GENE"){
 		for(i in 1:nd){
 			ni<-sum(labels==block[i,1])
 			if(ni>1){
-				avgdist<-mean(dissvector(as.matrix(dist[labels==block[i,1],labels==block[i,1]])))
+				#avgdist<-mean(dissvector(as.matrix(dist[labels==block[i,1],labels==block[i,1]])))
+				avgdist<-mean(as.vector(dist[labels==block[i,1],labels==block[i,1]]))
 				treematrix<-rbind(treematrix,c(paste("NODE",nodecount,"X",sep=""),cutzeros(block[i,1]),avgdist,2*block[i,3]/(D+1)-1,block[i,2],arrays[labels==block[i,1]],rep(NA,maxnode-ni)))
 				nodecount<-nodecount+1
 			}
@@ -78,7 +82,8 @@ makeTree<-function(labels,ord,medoids,dist,side="GENE"){
 					}
 					ni<-length(children)
 					if(ni>1){
-						avgdist<-mean(dissvector(as.matrix(dist[labels.d==block[i,1],labels.d==block[i,1]])))
+						#avgdist<-mean(dissvector(as.matrix(dist[labels.d==block[i,1],labels.d==block[i,1]])))
+						avgdist<-mean(as.vector(dist[labels.d==block[i,1],labels.d==block[i,1]]))
 						treematrix<-rbind(treematrix,c(paste("NODE",nodecount,"X",sep=""),cutzeros(block[i,1]),avgdist,2*block[i,3]/(D+1)-1,block[i,2],children,rep(NA,maxnode-ni)))
 						nodecount<-nodecount+1
 					}
@@ -100,7 +105,7 @@ makeTree<-function(labels,ord,medoids,dist,side="GENE"){
 			children<-c(children,arrays[labels.d1==uchildren[j]])
 	}
 	ni<-length(children)
-	treematrix<-rbind(treematrix,c(paste("NODE",nodecount,"X",sep=""),0,mean(dissvector(as.matrix(dist))),-1,order(rowSums(dist))[1],children,rep(NA,maxnode-ni)))
+	treematrix<-rbind(treematrix,c(paste("NODE",nodecount,"X",sep=""),0,mean(as.vector(dist)),-1,order(rowSums(as.matrix(dist)))[1],children,rep(NA,maxnode-ni)))
 	treematrix$medoid<-paste(side,treematrix$medoid,"X",sep="")
 	return(treematrix[-1,-2])
 }
@@ -160,6 +165,8 @@ hopach2tree<-function(data,file="HOPACH",hopach.genes=NULL,hopach.arrays=NULL,di
 	if(digits(row.labels[1])>1){
 		if(is.null(dist.genes))
 			dist.genes<-distancematrix(data,d=d.genes)
+		if(is.hdist(dist.genes))
+			dist.genes <- as.matrix(dist.genes) 
 		if(length(dist.genes[1,])!=p)
 			stop("Data and gene distance matrix dimensions do not agree in hopach2tree()")
 		if(length(dist.genes[,1])!=p)
@@ -181,6 +188,8 @@ hopach2tree<-function(data,file="HOPACH",hopach.genes=NULL,hopach.arrays=NULL,di
 	if(digits(col.labels[1])>1){
 		if(is.null(dist.arrays))
 			dist.arrays<-distancematrix(t(data),d=d.arrays)
+		if(is.hdist(dist.arrays))
+			dist.arrays <- as.matrix(dist.arrays) 
 		if(length(dist.arrays[1,])!=n)
 			stop("Data and array distance matrix dimensions do not agree in hopach2tree()")
 		if(length(dist.arrays[,1])!=n)

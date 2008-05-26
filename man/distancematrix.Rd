@@ -10,7 +10,9 @@
 
 \description{
 The function \code{distancematrix} is applied to a matrix of data to
-compute the pair wise distances between all rows of the matrix. The
+compute the pair wise distances between all rows of the matrix. In
+HOPACH Versions (>= 1.11.2) these distance functions are calculated in C,
+rather than R, to improve run time performance.
 function \code{distancevector} is applied to a matrix and a vector
 to compute the pair wise distances between each row of the matrix and 
 the vector. Both functions allow different choices of distance metric.
@@ -60,10 +62,30 @@ sqrt(n).
 }
 
 \value{
-	For \code{distancematrix}, a matrix of all pair wise distances between
-	rows of 'X'. The value in row 'j' and column 'i' is the distance
-	between rows 'i' and 'j'. The matrix is symmetric, and can be converted to
-	a vector containing the upper triangle using the function \code{dissvector}. 
+	For HOPACH Versions (>= 1.11.2) \code{distancematrix}, a \code{hdist} 
+	object of of all pair wise distances between the rows of the data matrix 'X',
+	i.e. the value of \code{hdist[i,j]} is the distance between rows 'i' and 'j'
+	of 'X', as defined by 'd'.  A \code{hdist} object is an S4 class containing 
+	four slots:
+	\item{Data}{ representing the lower triangle of the symmetric distance matrix.
+	
+	}
+	\item{Size}{
+
+	}
+	\item{Labels}{
+
+	}
+	\item{Method}{
+
+	}
+
+	A hdist object and can be converted to a matrix using \code{as.matrix(hdist)}.
+	(See \code{hdist} for more details.)
+
+	For \code{distancevector}, a vector of all pair wise distances between
+	rows of 'X' and the vector 'y'. Entry 'j' is the distance between row 'j'
+	of 'X' and the vector 'y'.
 
 	For \code{distancevector}, a vector of all pair wise distances between
 	rows of 'X' and the vector 'y'. Entry 'j' is the distance between row 'j'
@@ -95,7 +117,8 @@ van der Laan, M.J. and Pollard, K.S. A new algorithm for hybrid hierarchical clu
 \examples{
 mydata<-matrix(rnorm(50),nrow=10)
 deuclid<-distancematrix(mydata,d="euclid")
-vdeuclid<-dissvector(deuclid)
+# old method vdeuclid<-dissvector(deuclid)
+vdeuclid<-deuclid@Data
 ddaisy<-daisy(mydata)
 vdeuclid
 ddaisy/sqrt(length(mydata[1,]))
@@ -105,7 +128,8 @@ d2<-distancevector(mydata,mydata[1,],d="abscosangle")
 d1[1,]
 d2 #equal to d1[1,]
 
-d3<-dissvector(d1)
+# old method d3<-dissvector(d1)
+d3<-d1@Data
 pair<-vectmatrix(5,10)
 d1[pair[1],pair[2]]
 d3[5]

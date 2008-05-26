@@ -1,8 +1,6 @@
 \name{labelstomss}
 
 \alias{labelstomss}
-\alias{labelstosil}
-\alias{medstosil}
 \alias{msscheck}
 \alias{silcheck}
 
@@ -22,10 +20,6 @@ over all groups in the partition is low, the groups are homogeneous.
 labelstomss(labels, dist, khigh = 9, within = "med", between = "med", 
 hierarchical = TRUE)
 
-labelstosil(labels, dist)
-
-medstosil(medoids, dist)
-
 msscheck(dist, kmax = 9, khigh = 9, within = "med", between = "med", 
     force = FALSE, echo = FALSE, graph = FALSE)
 
@@ -37,7 +31,6 @@ silcheck(data, kmax = 9, diss = FALSE, echo = FALSE, graph = FALSE)
   \item{dist}{numeric distance matrix containing the pair wise distances 
 	between all elements. All values must be numeric and missing values
 	are not allowed.}
-  \item{medoids}{a vector indicating the rows/cols of \code{dist} that are the cluster medoids, i.e. profiles (or centroids) for each cluster.}
   \item{data}{a data matrix. Each column corresponds to an observation, and 
   each row corresponds to a variable. In the gene expression context, 
   observations are arrays and variables are genes. All values must be numeric. 
@@ -78,8 +71,6 @@ Median version is more robust than the Mean.
 
 \value{
 For \code{labelstomss}, the median (or mean or combination) split silhouette, depending on the values of \code{within} and \code{between}. \cr
-
-For \code{medstosil} and \code{labelstosil}, a list with first component the cluster label for each element and second compenent the silhouette for that element. The average silhouette is simply the mean of the second component.
 
 For \code{msscheck}, a vector with first component the chosen number of clusters (minimizing MSS) and second component the corresponding MSS.
 

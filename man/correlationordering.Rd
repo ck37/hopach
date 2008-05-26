@@ -52,11 +52,11 @@ van der Laan, M.J. and Pollard, K.S. A new algorithm for hybrid hierarchical clu
 \examples{
 mydata<-matrix(rnorm(50),nrow=10)
 mydist<-distancematrix(mydata,d="euclid")
-image(mydist)
+image(as.matrix(mydist))
 correlationordering(mydist)
 neword<-improveordering(mydist,echo=TRUE)
 correlationordering(mydist[neword,neword])
-image(mydist[neword,neword])
+image(as.matrix(mydist[neword,neword]))
 }
 
 \keyword{multivariate}

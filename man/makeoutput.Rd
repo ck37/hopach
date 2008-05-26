@@ -14,11 +14,11 @@ gene.names = NULL)
 }
 
 \arguments{
-  \item{data}{data matrix, data frame or \code{ExpressionSet} of gene expression measurements. Typically, each column corresponds to an array, and each row corresponds to a gene. For clustering arrays, the arrays appear in the rows and the genes in the columns. All values must be numeric. Missing values are ignored.}
+  \item{data}{data matrix, data frame or exprSet of gene expression measurements. Typically, each column corresponds to an array, and each row corresponds to a gene. For clustering arrays, the arrays appear in the rows and the genes in the columns. All values must be numeric. Missing values are ignored.}
   \item{hopachobj}{output of the \code{hopach} function.}
   \item{bootobj}{optional output of \code{boothopach} or \code{bootmedoids} - a matrix of bootstrap estimated cluster membership probabilities, with a row for each row in \code{data} and a column for each cluster.}
   \item{file}{filename for the table produced.}
-  \item{gene.names}{optional names or annotations for the genes (arrays), which can be different from the row names of \code{data}.}
+  \item{gene.names}{optional names or annotations for the genes (arrays), which can be different from the row names of \code{data}}
 }
 
 \details{
@@ -30,6 +30,7 @@ The function \code{makeoutput} has no value. It writes a tab delimited text file
 }
 
 \references{
+
 van der Laan, M.J. and Pollard, K.S. A new algorithm for hybrid hierarchical clustering with visualization and the bootstrap. Journal of Statistical Planning and Inference, 2003, 117, pp. 275-303.
 
 \url{http://www.stat.berkeley.edu/~laan/Research/Research_subpages/Papers/hopach.pdf}
@@ -42,6 +43,7 @@ van der Laan, M.J. and Pollard, K.S. A new algorithm for hybrid hierarchical clu
 \seealso{\code{\link{hopach}}, \code{\link{boothopach}}, \code{\link{bootmedoids}}}
 
 \examples{
+
 #25 variables from two groups with 3 observations per variable
 mydata<-rbind(cbind(rnorm(10,0,0.5),rnorm(10,0,0.5),rnorm(10,0,0.5)),cbind(rnorm(15,5,0.5),rnorm(15,5,0.5),rnorm(15,5,0.5)))
 dimnames(mydata)<-list(paste("Var",1:25,sep=""),paste("Exp",1:3,sep=""))
@@ -57,6 +59,8 @@ myobj<-boothopach(mydata,clustresult)
 makeoutput(mydata,clustresult,myobj)
 }
 
+
 \keyword{cluster}
 \keyword{nonparametric}
 \keyword{multivariate}
+

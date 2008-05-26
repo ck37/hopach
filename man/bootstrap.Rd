@@ -15,7 +15,7 @@ bootmedoids(data, medoids, d = "cosangle", B = 1000, I)
 }
 
 \arguments{
-  \item{data}{data matrix, data frame or \code{ExpressionSet} of gene expression measurements. Each column corresponds to an array, and each row corresponds to a gene. All values must be numeric. Missing values are ignored.}
+  \item{data}{data matrix, data frame or exprSet of gene expression measurements. Each column corresponds to an array, and each row corresponds to a gene. All values must be numeric. Missing values are ignored.}
   \item{hopachobj}{output of the \code{hopach} function.}
   \item{B}{number of bootstrap resampled data sets.}
   \item{I}{number of bootstrap resampled data sets (deprecated, retaining til v1.2 for back compatibility).}

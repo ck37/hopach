@@ -1,121 +1,15 @@
 #Hierarchical Ordered Partitioning and Collapsing Hybrid (HOPACH)#
 
-#1. silhouette related calculations#
-
-#a. silhouettes
-
-#from medoids and distance matrix 
-medstosil<-function(medoids,dist){
-	if(!is.vector(medoids))
-		stop("First arg to medstosil() must be a vector")
-	if(!is.matrix(dist))
-		stop("Second arg to medstosil() must be a matrix")
-	p<-length(dist[1,])
-	if(p!=length(dist[,1]))
-		stop("Second arg to medstosil() not a square matrix")
-	k<-length(medoids)
-	if(k<2){
-		warning("Less than 2 medoids - can't calculate silhouettes!")
-		sil<-rep(NA,p)
-		clust<-rep(1,p)
-	}
-	else{
-		#get labels
-		clust<-apply(dist[,medoids],1,order)[1,]
-		#get clussizes (same order as medoids)
-		clussize<-table(clust)
-		#get sils
-		avgdist<-matrix(0,nrow=p,ncol=k)
-		a<-b<-NULL
-		for(j in (1:k)){
-			for(m in (1:k)){
-				subdist<-dist[clust==j,clust==m]
-				if(clussize[j]>1) 
-					avgdist[clust==j,m]<-rowSums(as.matrix(subdist))
-				else
-					avgdist[clust==j,m]<-sum(subdist)
-				if(m==j){
-					if(clussize[m]>1) 
-						avgdist[clust==j,m]<-avgdist[clust==j,m]/(clussize[m]-1)
-					else 
-						avgdist[clust==j,m]<-0
-				}
-				else 
-					avgdist[clust==j,m]<-avgdist[clust==j,m]/clussize[m]
-			}
-			a[clust==j]<-avgdist[clust==j,j]
-			if(clussize[j]>1) 
-				b[clust==j]<-apply(as.matrix(avgdist[clust==j,-j]),1,min)
-			else 
-				b[clust==j]<-min(avgdist[clust==j,-j])
-		}
-		sil<-(b-a)/pmax(a,b)
-	}
-	list(clust,sil)
-}
-
-#from labels and distance matrix
-labelstosil<-function(labels,dist){
-	if(!is.vector(labels))
-		stop("First arg to labelstosil() must be a vector")
-	if(!is.matrix(dist))
-		stop("Second arg to labelstosil() must be a matrix")
-	p<-length(dist[1,])
-	if(p!=length(dist[,1]))
-		stop("Second arg to labelstosil() not a square matrix")
-	if(length(labels)!=p)
-		stop("Distance matrix and labels dimensions do not agree in labelstosil()")
-	unlabels<-sort(unique(labels))
-	k<-length(unlabels)
-	if(k<2){
-		warning("Only one label - can't calculate silhouettes!")
-		sil<-rep(NA,p)
-	}
-	else{
-		clussize<-table(labels)
-		#get sils
-		avgdist<-matrix(0,nrow=p,ncol=k)
-		a<-b<-NULL
-		for(j in (1:k)){
-			for(m in (1:k)){
-				subdist<-dist[labels==unlabels[j],labels==unlabels[m]]
-				if(clussize[j]>1) 
-					avgdist[labels==unlabels[j],m]<-rowSums(as.matrix(subdist))
-				else 
-					avgdist[labels==unlabels[j],m]<-sum(subdist)
-				if(m==j){
-					if(clussize[m]>1) 
-						avgdist[labels==unlabels[j],m]<-avgdist[labels==unlabels[j],m]/(clussize[m]-1)
-					else 
-						avgdist[labels==unlabels[j],m]<-0
-				}
-				else 
-					avgdist[labels==unlabels[j],m]<-avgdist[labels==unlabels[j],m]/clussize[m]
-			}
-			a[labels==unlabels[j]]<-avgdist[labels==unlabels[j],j]
-			if(clussize[j]>1) 
-				b[labels==unlabels[j]]<-apply(as.matrix(avgdist[labels==unlabels[j],-j]),1,min)
-			else 
-				b[labels==unlabels[j]]<-min(avgdist[labels==unlabels[j],-j])
-		}
-		sil<-(b-a)/pmax(a,b)
-	}
-	list(labels,sil)
-}
-
-
-#b. mean/median split silhoutte
+#a. mean/median split silhoutte
 
 labelstomss<-function(labels,dist,khigh=9,within="med",between="med",hierarchical=TRUE){
 	if(!is.vector(labels))
 		stop("First arg to labelstomss() must be a vector")
-	if(!is.matrix(dist))
-		stop("Second arg to labelstomss() must be a matrix")
-	p<-length(dist[1,])
-	if(p!=length(dist[,1]))
-		stop("Second arg to labelstomss() not a square matrix")
+
+	p = dist@Size
 	if(length(labels)!=p)
 		stop("Distance matrix and labels dimensions do not agree in labelstomss()")
+
 	unlabels<-sort(unique(labels))
 	k<-length(unlabels)
 	ss<-NULL
@@ -125,7 +19,7 @@ labelstomss<-function(labels,dist,khigh=9,within="med",between="med",hierarchica
 		if(pp<3)
 			ss[i]<-NA
 		else{
-			dissvec<-dissvector(dist[labs,labs])
+			dissvec<-dist[labs,labs]@Data
 			bestk<-silcheck(dissvec,min(khigh,(length(labs)-1),na.rm=TRUE),diss=TRUE)[1]
 			if(within=="med") 
 				ss[i]<-median(pam(dissvec,bestk,diss=TRUE)$silinfo$widths[,3])
@@ -162,9 +56,10 @@ labelstomss<-function(labels,dist,khigh=9,within="med",between="med",hierarchica
 	return(out)
 }
 
-#c. optimizing number of clusters with average silhouette or mss
+#b. optimizing number of clusters with average silhouette or mss
 
 #silcheck (silhouettes)
+#data is a vector of the distance matrix...
 
 silcheck<-function(data, kmax=9, diss=FALSE, echo=FALSE, graph=FALSE)
 {
@@ -202,17 +97,12 @@ silcheck<-function(data, kmax=9, diss=FALSE, echo=FALSE, graph=FALSE)
 #msscheck (mss)
 msscheck<-function(dist, kmax=9, khigh=9, within="med", between="med",
                    force=FALSE, echo=FALSE, graph=FALSE){
-    if( inherits(dist, "dist") )
-        dist = as.matrix(dist)
-    if(!is.matrix(dist))
-        stop("First arg to msscheck must be a matrix")
-    p<-length(dist[1,])
-    if(p!=length(dist[,1]))
-        stop("First arg to msscheck is not a square matrix")
+	p = dist@Size
     if(p<3)
         out<-c(1,NA)
     else{
-        dvec<-dissvector(dist)
+        dvec<-dist@Data
+
         kmax<-min(kmax,p-1,na.rm=TRUE)
         if(force)
             mss<-0
@@ -254,12 +144,18 @@ digits<-function(label){
 }
 
 #truncates labels to dig digits
-cutdigits<-function(labels,dig){
-	dl<-NULL
-	for(i in 1:length(labels)) 
-		dl[i]<-digits(labels[i])
-	df<-max(0,dl-dig)
-	trunc(labels/(10^df))		
+#cutdigits<-function(labels,dig){
+#	dl<-NULL
+#	for(i in 1:length(labels)) 
+#		dl[i]<-digits(labels[i])
+#	df<-max(0,dl-dig)
+#	trunc(labels/(10^df))		
+#}
+
+# patrick's suggestion...
+cutdigits <- function( labels, dig ){
+	df <- max(0,digits(labels) - dig)
+	return(trunc(labels/(10^df)))
 }
 
 #removes trailing zeros from labels
@@ -313,7 +209,8 @@ msssplitcluster<-function(clust1,l1,id1,medoid1,med2dist,right,dist1,kmax=9,khig
 		k1<-1				
 	else{
 		l<-length(clust1[,1])
-		dissvec<-dissvector(dist1)
+		dissvec<-dist1@Data
+
 		kmax<-min(p1-1,kmax,na.rm=TRUE)
 		khigh<-min(p1-1,khigh,na.rm=TRUE)
 		k1<-msscheck(dist1,kmax,khigh,within,between)[1]
@@ -326,6 +223,7 @@ msssplitcluster<-function(clust1,l1,id1,medoid1,med2dist,right,dist1,kmax=9,khig
 			for(j in (1:k1)) 
 				distnewmedoids[j]<-mean(med2dist[newlabels1==newlabels1[pamobj$medoids[j]]])  
 			if(right==1) 
+				#ord<-order(distnewmedoids, decreasing = TRUE)
 				ord<-rev(order(distnewmedoids))
 			else 
 				ord<-order(distnewmedoids)
@@ -358,16 +256,9 @@ msssplitcluster<-function(clust1,l1,id1,medoid1,med2dist,right,dist1,kmax=9,khig
 	#within and between are either "med" for median split silhouette or "mean"
 	# for mean split silhouette
 mssnextlevel<-function(data,prevlevel,dmat,kmax=9,khigh=9,within="med",between="med"){
-	if(!is.matrix(data))
-		stop("Frist arg to mssnextlevel() must be a matrix")
-	if(!is.matrix(dmat))
-		stop("Third arg to mssnextlevel() must be a matrix")
 	n<-length(data[1,])
 	p<-length(data[,1])
-	if(length(dmat[1,])!=p)
-		stop("Data and distance matrix dimensions do not agree in mssnextlevel()")
-	if(length(dmat[,1])!=p)
-		stop("Third arg to mssnextlevel() is not a square matrix")
+
 	id<-1:p
 	k<-prevlevel[[1]]
 	medoids<-prevlevel[[2]]
@@ -407,10 +298,13 @@ mssnextlevel<-function(data,prevlevel,dmat,kmax=9,khigh=9,within="med",between="
 			medoid2<-medoids[j+1]
 		else 
 			medoid2<-medoids[j-1]
-		if(length(id1)>1) 
-			med2dist<-rowMeans(as.matrix(dmat[labels==ordlabels[j],labels==labels[medoid2]]))
-		else 
+		if(length(id1)>1) {
+			#med2dist<-rowMeans(as(dmat[labels==ordlabels[j],labels==labels[medoid2]],"matrix"))
+			med2dist<-rowMeans(dmat[labels==ordlabels[j],labels==labels[medoid2]])
+		}else{
 			med2dist<-mean(dmat[labels==ordlabels[j],labels==labels[medoid2]])
+		}
+
 		splitobj<-msssplitcluster(clust1,l1,id1,medoid1,med2dist,right,dmat[labels==l1,labels==l1],kmax,khigh,within,between)
 		newlabels[labels==ordlabels[j]]<-splitobj[[3]]
 		k1<-splitobj[[1]]
@@ -442,8 +336,7 @@ mssnextlevel<-function(data,prevlevel,dmat,kmax=9,khigh=9,within="med",between="
 	#dmat is the distance matrix. if this has already been calculated by the user, it can
 	# be passed into the function in order to save calculation time
 orderelements<-function(level,data,rel="own",d="cosangle",dmat=NULL){
-	if(!is.matrix(data))
-		stop("Second arg to orderelements() must be a matrix")
+
 	idn<-1:length(data[,1])
 	k<-level[[1]]
 	labels<-level[[4]]
@@ -452,8 +345,11 @@ orderelements<-function(level,data,rel="own",d="cosangle",dmat=NULL){
 	ord<-order(labels)
 	idnord<-idn[ord]
 	subdataord<-data[ord,]
-	if(is.matrix(dmat))
-		distord<-dmat[ord,]
+
+	if(is.null(dmat))
+		dmat <- distancematrix(data,d) 
+	distord<-dmat[ord,]
+
 	labelsord<-labels[ord]
 	count<-1
 	for(j in (1:k)){
@@ -462,10 +358,7 @@ orderelements<-function(level,data,rel="own",d="cosangle",dmat=NULL){
 		if(clussizes[j]>2){
 			tempid<-idnord[start:end]
 			if(rel=="co"){
-				if(is.matrix(dmat)) 
-					distj<-distord[,ord][start:end,start:end]
-				else 
-					distj<-distancematrix(subdataord[start:end,],d)
+				distj<-distord[,ord][start:end,start:end]
 				idnord[start:end]<-tempid[improveordering(distj)]
 			}
 			else{
@@ -474,15 +367,14 @@ orderelements<-function(level,data,rel="own",d="cosangle",dmat=NULL){
 						mednext<-medoids[j+1]
 					else 
 						mednext<-medoids[j-1]
-				}
-				else 
+				}else 
 					mednext<-medoids[j]
-				if(is.matrix(dmat)) 
-					dmednext<-distord[start:end,mednext]	
-				else 
-					dmednext<-distancevector(subdataord[start:end,],as.vector(data[mednext,]),d)
+
+				dmednext<-distord[start:end,mednext]	
+
 				if(rel=="neighbor"){
 					if(j<k) 
+						#ordtemp<-order(dmednext, decreasing = TRUE)
 						ordtemp<-rev(order(dmednext))
 					else 
 						ordtemp<-order(dmednext)
@@ -499,38 +391,42 @@ orderelements<-function(level,data,rel="own",d="cosangle",dmat=NULL){
 	list(data[idnord,],idnord)
 }
 
-#d. mssinitlevel: creates ordered initial level#
-	#data is the data matrix
-	#kmax is the maximum number of groups
-	#khigh is the maximum number of child groups for each group when computing mss
-	#d is an indicator of which distance function to use.
-	# choices are: "cosangle" (default),"abscosangle","euclid","abseuclid","cor","abscor"	
-	#dmat is the distance matrix. if this has already been calculated by the user, it can
-	# be passed into the function in order to save calculation time
-	#within and between are either "med" for median split silhouette or "mean"
-	# for mean split silhouette
-	#ord is an indicator of how to order the clusters. choices are to maximize 
-	# correlation ordering ("co") or to build a tree of cluster medoids ("clust")
+
+#  d. mssinitlevel: creates ordered initial level #
+#  data is the data matrix
+#  kmax is the maximum number of groups
+#  khigh is the maximum number of child groups for each group when computing mss
+#  d is an indicator of which distance function to use.
+#  choices are: "cosangle" (default),"abscosangle","euclid","abseuclid","cor","abscor"	
+#  dmat is the distance matrix of class hdist. 
+#  if this has already been calculated by the user, it can
+#  be passed into the function in order to save calculation time
+#  within and between are either "med" for median split silhouette or "mean"
+#  for mean split silhouette
+#  ord is an indicator of how to order the clusters. choices are to maximize 
+#  correlation ordering ("co") or to build a tree of cluster medoids ("clust")
+
 mssinitlevel<-function(data, kmax=9, khigh=9, d="cosangle", dmat=NULL,
                        within="med", between="med", ord="co",
                        verbose=FALSE)
 {
+		  #print("mssinitlevel")
 	if(!is.matrix(data))
 		stop("First arg to mssinitlevel() must be a matrix")
+
 	p<-length(data[,1])
-	if(!is.matrix(dmat))
-		dmat<-distancematrix(data,d)
-	if(length(dmat[1,])!=p)
+
+	if(dmat@Size != p)
 		stop("Data and distance matrix dimensions do not agree in mssinitlevel()")
-	if(length(dmat[,1])!=p)
-		stop("Distance matrix must be a square matrix in mssinitlevel()")
+
 	m<-msscheck(dmat,kmax,khigh,within,between)
 	if(m[1]==1){
-            if(verbose)
+      if(verbose)
 		cat("No strong evidence for clusters in the first level - \n continuing to split root node anyway. \n")
 		m<-msscheck(dmat,kmax,khigh,within,between,force=TRUE)
 	}
-	pamobj<-pam(dissvector(dmat),m[1],diss=TRUE)
+
+	pamobj<-pam(dmat@Data, m[1], diss=TRUE)
 	rowmedoids<-pamobj$medoids
 	final<-ifelse(max(pamobj$clusinfo[,1])<3,1,0)
 	if(m[1]>2){			
@@ -540,10 +436,11 @@ mssinitlevel<-function(data, kmax=9, khigh=9, d="cosangle", dmat=NULL,
 		if(ord=="co")
 			medoidsord<-improveordering(medoidsdist)
 		if(ord=="clust"){
-			mpamobj<-pam(dissvector(medoidsdist),2,diss=TRUE)
+			mpamobj<-pam(medoidsdist@Size,2,diss=TRUE)
 			labelsmed<-mpamobj$clustering
 			medmed<-mpamobj$medoids
 			clussizes<-mpamobj$clusinfo[,1]
+			
 			prevlevel<-mssnextlevel(medoidsdata,list(2,medmed,clussizes,labelsmed,0,cbind(c(1,2),medmed)),dmat=medoidsdist,kmax,khigh,within,between)
 			final<-prevlevel[[5]]
 			if(final==0){
@@ -598,8 +495,6 @@ mssinitlevel<-function(data, kmax=9, khigh=9, d="cosangle", dmat=NULL,
 	#impr is a margin of improvement required to accept a collapse with msscollap and
 	# mssmulticollap. the default is impr=0
 paircoll<-function(i,j,data,level,d="cosangle",dmat=NULL,newmed="medsil"){
-	if(!is.matrix(data))
-		stop("First arg to paircoll() must be a matrix")
 	p<-length(data[,1])
 	k<-level[[1]]
 	labels<-level[[4]]
@@ -631,14 +526,12 @@ paircoll<-function(i,j,data,level,d="cosangle",dmat=NULL,newmed="medsil"){
 		medoids[i]<-rowsub[order(distsfm)[1]]
 	}
 	else{
-		if(is.matrix(dmat)) 
-			colldist<-dmat[labels==labeli,labels==labeli]
-		else 
-			colldist<-distancematrix(data[labels==labeli,],d)
+		#colldist<-as.matrix(dmat[labels==labeli,labels==labeli])
+		colldist<-as(dmat[labels==labeli,labels==labeli],"matrix")
+
 		rowsub<-(1:p)[labels==labeli]
 		if(newmed=="center"){
 			sumdist<-rowSums(colldist)
-			medoids[i]<-rowsub[order(sumdist)==1]
 		}
 		if(newmed=="medsil"){
 			othermed<-medoids[-c(i,j)]
@@ -646,22 +539,16 @@ paircoll<-function(i,j,data,level,d="cosangle",dmat=NULL,newmed="medsil"){
 			othern<-length(othermed)
 			if(othern==0)
 				stop("Not enough medoids to use newmed='medsil' in paircoll()")
-			if(is.matrix(dmat)){
-			 	if(othern==1) 
-					otherdist<-cbind(dmat[labels==labeli,othermed])
-				else 
-					otherdist<-rbind(dmat[labels==labeli,othermed])
-			}
-			else{
-				if(othern==1)
-					otherdist<-distancevector(data[labels==labeli,],data[othermed,],d)
-				else{
-					othermedmat<-data[othermed,]
-					otherdist<-matrix(0,nrow=collp,ncol=othern)
-					for(l in 1:othern)
-						otherdist[,l]<-distancevector(data[labels==labeli,],othermedmat[l,],d)
+			if(is(dmat,"hdist")){
+			 	if(othern==1){ 
+					#otherdist<-cbind(dmat[labels==labeli,othermed])
+					otherdist<-dmat[labels==labeli,othermed]
+				}else{ 
+					#otherdist<-rbind(dmat[labels==labeli,othermed])
+					otherdist<-dmat[labels==labeli,othermed]
 				}
-			}			
+			}
+
 			if(othern==1)
 				b<-otherdist
 			else
@@ -670,7 +557,8 @@ paircoll<-function(i,j,data,level,d="cosangle",dmat=NULL,newmed="medsil"){
 			diag(b)<-0
 			b<-abs(b-colldist)/pmax(colldist,b)
 			sumdist<-rowSums(b)
-			medoids[i]<-rowsub[rev(order(sumdist))==1]
+			medoids[i]<-rowsub[order(sumdist,decreasing=TRUE)==1]
+			#medoids[i]<-rowsub[rev(order(sumdist))==1]
 		}
 	}	
 	k<-k-1	
@@ -696,8 +584,6 @@ paircoll<-function(i,j,data,level,d="cosangle",dmat=NULL,newmed="medsil"){
 
 #note: this version of collap does not have silhbased arg: for use with MSS only (not silhouettes)
 collap<-function(data,level,d="cosangle",dmat=NULL,newmed="medsil"){
-	if(!is.matrix(data))
-		stop("First arg to collap() must be a matrix")
 	k<-level[[1]]
 	if(k<3){
 		warning("Not enough medoids to use newmed='medsil' in collap() - \n using newmed='nn' instead \n") 
@@ -710,11 +596,10 @@ collap<-function(data,level,d="cosangle",dmat=NULL,newmed="medsil"){
 	medoidsdata<-data[medoids,]
 	if(sum(is.na(medoidsdata))>0) 
 		warning("Missing value(s) in medoidsdata in collap()")
-	if(is.matrix(dmat)) 
-		distmed<-dmat[medoids,medoids]
-	else 
-		distmed<-distancematrix(medoidsdata,d)
-	distv<-dissvector(distmed)
+
+	distmed<-dmat[medoids,medoids]
+	distv<-distmed@Data
+
 	indexmin<-order(distv)[1]
 	best<-vectmatrix(indexmin,k)
 	clustfinal<-paircoll(best[1],best[2],data,level,d,dmat,newmed)
@@ -722,10 +607,7 @@ collap<-function(data,level,d="cosangle",dmat=NULL,newmed="medsil"){
 }
 
 msscollap<-function(data,level,khigh,d="cosangle",dmat=NULL,newmed="medsil",within="med",between="med",impr=0){
-	if(!is.matrix(data))
-		stop("First arg to msscollap() must be a matrix")	
-	if(!is.matrix(dmat)) 
-		dmat<-distancematrix(data,d)
+
 	newk<-level[[1]]
 	mss1<-labelstomss(level[[4]],dmat,khigh,within,between)
 	maxncoll<-max(0,newk-2)
@@ -754,15 +636,16 @@ msscollap<-function(data,level,khigh,d="cosangle",dmat=NULL,newmed="medsil",with
 mssmulticollap<-function(data,level,khigh,d="cosangle",dmat=NULL,newmed="medsil",within="med",between="med",impr=0){
 	if(!is.matrix(data))
 		stop("First arg to mssmulticollap() must be a matrix")
-	if(!is.matrix(dmat)) 
-		dmat<-distancematrix(data,d)
+
 	medoids<-level[[2]]
 	medoidsdata<-data[medoids,]
 	if(sum(is.na(medoidsdata))>0) 
 		warning("Missing value(s) in medoidsdata in mssmulticollap()")
+
 	distmed<-dmat[medoids,medoids]
 	k<-level[[1]]
-	ord<-order(dissvector(distmed))
+	ord<-order(distmed@Data)
+
 	mss1<-labelstomss(level[[4]],dmat,khigh,within,between)
 	maxncoll<-max(0,k*(k-1)/2)
 	ncoll<-0 
@@ -791,8 +674,9 @@ mssmulticollap<-function(data,level,khigh,d="cosangle",dmat=NULL,newmed="medsil"
 			medoidsdata<-data[medoids,]
 			if(sum(is.na(medoidsdata))>0) 
 				warning("Missing value(s) in medoidsdata in mssmulticollap()")
+
 			distmed<-dmat[medoids,medoids]
-			ord<-order(dissvector(distmed))
+			ord<-order(distmed@Data)
 	        }
 		i<-i+1
 	}
@@ -835,12 +719,11 @@ mssrundown<-function(data, K=16, kmax=9, khigh=9, d="cosangle",
 	dmat=NULL, initord="co", coll="seq", newmed="medsil", stop=TRUE,
 	finish=FALSE, within="med",between="med",impr=0, verbose=FALSE) 
 { 
+		  #print("mssrundown")
 	if(!is.matrix(data))
 		stop("First arg to mssrundown() must be a matrix")
-	if(!is.matrix(dmat))
-                dmat<-distancematrix(data,d)
-	bestlevel<-level<-mssinitlevel(data, kmax, khigh, d, dmat,
-                                       within, between, initord, verbose)
+
+	bestlevel<-level<-mssinitlevel(data, kmax, khigh, d, dmat, within, between, initord, verbose)
 	bestmss<-mss<-labelstomss(level[[4]],dmat,khigh,within,between)
 	bestl<-l<-1
 	ind<-0
@@ -889,8 +772,7 @@ msscomplete<-function(level, data, K=16, khigh=9, d="cosangle",
 {
 	if(!is.matrix(data))
 		stop("First arg to msscomplete() must be a matrix")
-	if(!is.matrix(dmat))
-                dmat<-distancematrix(data,d)
+
 	count<-digits(level[[4]][1])
         if(verbose)
             cat("Running down without collapsing from Level",count,"\n")
@@ -911,15 +793,13 @@ msscomplete<-function(level, data, K=16, khigh=9, d="cosangle",
 	#klow and khigh are the min and max number of children at each node
 	#newnextlevel produces the args to newsplitcluster and calls
 	# this function to do the splitting of each node
+
 newnextlevel<-function(data,prevlevel,dmat,klow=2,khigh=6){
+		  #print("newnextlevel")
 	if(!is.matrix(data))
 		stop("First arg to newnextlevel() must be a matrix")
 	p<-length(data[,1])
 	n<-length(data[1,])
-	if(length(dmat[1,])!=p)
-		stop("Distance and data matrix dimensions do not agree in newnextlevel()")
-	if(length(dmat[,1])!=p)
-		stop("Third arg to newnextlevel() is not a square matrix")
 	id<-1:p
 	k<-prevlevel[[1]]
 	medoids<-prevlevel[[2]]
@@ -962,9 +842,10 @@ newnextlevel<-function(data,prevlevel,dmat,klow=2,khigh=6){
 		else 
 			medoid2<-medoids[j-1]
 		if(length(id1)>1) 
-			med2dist<-rowMeans(as.matrix(dmat[labels==ordlabels[j],labels==labels[medoid2]]))
+			med2dist<-rowMeans(as(dmat[labels==ordlabels[j],labels==labels[medoid2]],"matrix"))
 		else 
 			med2dist<-mean(dmat[labels==ordlabels[j],labels==labels[medoid2]])
+
 		splitobj<-newsplitcluster(clust1,l1,id1,klow,kmax,medoid1,med2dist,right,dmat[labels==l1,labels==l1]) 
 		newlabels[labels==ordlabels[j]]<-splitobj[[3]]
 		k1<-splitobj[[1]]
@@ -987,6 +868,7 @@ newnextlevel<-function(data,prevlevel,dmat,klow=2,khigh=6){
 }
 
 newsplitcluster<-function(clust1,l1,id1,klow=2,khigh=2,medoid1,med2dist,right,dist1){
+		  #print("newsplitcluter")
 	if(!medoid1) 
 		warning("Medoid missing - continue to split cluster")
 	else{
@@ -1006,7 +888,8 @@ newsplitcluster<-function(clust1,l1,id1,klow=2,khigh=2,medoid1,med2dist,right,di
 	}
 	else{
 		l<-length(clust1[,1])
-		dissvec<-dissvector(dist1)
+		dissvec<-dist1@Data
+
 		kmax<-min(p1-1,khigh)
 		a<-rep(0,(kmax-klow+2))
 		best<-2
@@ -1023,7 +906,8 @@ newsplitcluster<-function(clust1,l1,id1,klow=2,khigh=2,medoid1,med2dist,right,di
 		for(j in (1:k1)) 
 			distnewmedoids[j]<-mean(med2dist[newlabels1==newlabels1[pamobj$medoids[j]]])  
 		if(right==1) 
-			ord<-rev(order(distnewmedoids))
+			ord<-order(distnewmedoids,decreasing=TRUE)
+			#ord<-rev(order(distnewmedoids))
 		else 
 			ord<-order(distnewmedoids)
 		newmedoids1<-newmedoids1[ord]
@@ -1066,7 +950,7 @@ newsplitcluster<-function(clust1,l1,id1,klow=2,khigh=2,medoid1,med2dist,right,di
 	# silhouette (i.e.: (a-b)/max(a,b), where a=dist(medoid), b=dist(next closest medoid)). 
 	#mss is either "med" (default) for median split silhouettes or "mean" for mean 
 	# split silhouettes.
-	#impr is a margin of improvement required to accept a collapse with msscollap and
+	# impr is a margin of improvement required to accept a collapse with msscollap and
 	# mssmulticollap. the default is impr=0.
 	#initord is "co" (default) if improveordering() is used to order the clusters in 
 	# the first level or "clust" if clsutering the medoids is used.
@@ -1080,6 +964,18 @@ hopach<-function(data, dmat=NULL, d="cosangle", clusters="best", K=15,
 	if(inherits(data,"ExpressionSet")) 
 		data<-exprs(data)
 	data<-as.matrix(data)
+
+	# Convert to hdist immediately #
+	if( is.null(dmat) ){
+      	dmat<-distancematrix(data,d)
+	}else if( is.matrix(dmat) ){
+		dmat <- as(dmat,"hdist")
+	}else if( class(dmat) == "dist" ){
+		dmat <- hdist(Data=as.numeric(dmat), Size=attr(dmat,"Size"), Labels=(1:(attr(dmat,"Size"))), Call=as.character(attr(dmat,"call"))[3])
+	}else if(!is.hdist(dmat)){
+		stop("Distance matrix could not be created into hdist object.") 
+	}
+
 	if(K>15){
 		K<-15
 		warning("K set to 15 - can't do more than 15 splits")

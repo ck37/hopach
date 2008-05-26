@@ -4,7 +4,6 @@
 \alias{disseuclid}
 \alias{disscor}
 \alias{dissabscosangle}
-\alias{dissabseuclid}
 \alias{dissabscor}
 \alias{vdisscosangle}
 \alias{vdisseuclid}
@@ -27,8 +26,6 @@ disseuclid(X, na.rm = TRUE)
 disscor(X, na.rm = TRUE)
 
 dissabscosangle(X, na.rm = TRUE)
-
-dissabseuclid(X, na.rm = TRUE)
 
 dissabscor(X, na.rm = TRUE)
 
