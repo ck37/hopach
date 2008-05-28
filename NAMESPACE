@@ -1,24 +1,18 @@
-import("stats")
-import("methods")
-import("Biobase")
-import("cluster")
+useDynLib(hopach)
 
-useDynLib("hopach")
+import(stats, methods, Biobase, cluster)
 
-export("boot2fuzzy", "bootplot", "bootmedoids", "boothopach", "dplot",
-		 "vdisscosangle", "vdissabscosangle", "vdisseuclid", "vdissabseuclid",
-		 "vdisscor", "vdissabscor", "distancematrix", "distancevector","dissvector",
-		 "dissmatrix", "vectmatrix", "correlationordering", "improveordering",
-		 "disseuclid", "disscor", "dissabscor", "disscosangle", "dissabscosangle",
-		 "makeTree", "hopach2tree", "labelstomss",
-		 "silcheck", "msscheck", "digits", "cutdigits", "cutzeros", "nonzeros",
-		 "msssplitcluster", "mssnextlevel", "orderelements", "mssinitlevel", 
-		 "paircoll", "collap", "msscollap", "mssmulticollap", "mssrundown", 
-		 "msscomplete", "newnextlevel", "newsplitcluster", "hopach", "makeoutput",
-		 "prune", "is.hdist", "hdist")
+exportClasses(hdist)
+exportMethods(show, "[", coerce, as.matrix, as.hdist, as.vector, length)
 
-exportClasses("hdist")
-exportMethods( "show", "[", "coerce", "as.matrix", "as.hdist", "as.vector", "length")
-
-
-
+export(boot2fuzzy, bootplot, bootmedoids, boothopach, dplot,
+		 vdisscosangle, vdissabscosangle, vdisseuclid, vdissabseuclid,
+		 vdisscor, vdissabscor, distancematrix, distancevector, dissvector,
+		 dissmatrix, vectmatrix, correlationordering, improveordering,
+		 disseuclid, disscor, dissabscor, disscosangle, dissabscosangle,
+		 makeTree, hopach2tree, labelstomss,
+		 silcheck, msscheck, digits, cutdigits, cutzeros, nonzeros,
+		 msssplitcluster, mssnextlevel, orderelements, mssinitlevel, 
+		 paircoll, collap, msscollap, mssmulticollap, mssrundown, 
+		 msscomplete, newnextlevel, newsplitcluster, hopach, makeoutput,
+		 prune, is.hdist, hdist)
