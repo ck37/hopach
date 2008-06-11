@@ -1,6 +1,6 @@
 useDynLib(hopach)
 
-import(stats, methods, Biobase, cluster)
+import(stats, Biobase, cluster)
 
 exportClasses(hdist)
 exportMethods(show, "[", coerce, as.matrix, as.hdist, as.vector, length)
