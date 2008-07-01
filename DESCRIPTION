@@ -2,9 +2,9 @@ Package: hopach
 Version: 2.0.0
 Title: Hierarchical Ordered Partitioning and Collapsing Hybrid
         (HOPACH)
-Author: Katherine S. Pollard, with Mark J. van der Laan <laan@stat.berkeley.edu>.
+Author: Katherine S. Pollard, with Mark J. van der Laan <laan@stat.berkeley.edu> and Greg Wall
 Maintainer: Katherine S. Pollard <kpollard@wald.ucdavis.edu>
-Depends: R (>= 2.6.0), cluster, Biobase
+Depends: R (>= 2.6.0), cluster, Biobase, methods
 Description: The HOPACH clustering algorithm builds a hierarchical
         tree of clusters by recursively partitioning a data set, while
         ordering and possibly collapsing clusters at each level. The
