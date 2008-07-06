@@ -102,13 +102,12 @@ collapse at each level, and (iii) identify the first level of the tree with maxi
 homogeneous clusters. In each case, the goal is to minimize MSS, which is a measure of
 cluster heterogeneity described in http://www.bepress.com/ucbbiostat/paper107/. 
 
-Note that the correlation and cosine-angle distances (plus their 
-absolute values) used for clustering in hopach are the square roots 
-of the usual distances. Typically, this transformation makes the 
-dissimilarity correspond more closely with the norm. Also, the 
-Euclidean distance is standardized by the sample size, so that the values 
-produced are equal to the values from the dist() function divided by 
-sqrt(n). See ? distancematrix(). 
+In hopach versions <2.0.0, these functions returned the square root of 
+the usual distance for \code{d="cosangle"}, \code{d="abscosangle"}, 
+\code{d="cor"}, and \code{d="abscor"}. Typically, this transformation makes
+the dissimilarity correspond more closely with the norm. In order to 
+agree with the \code{dist} function, the square root is no longer used 
+in versions >=2.0.0. See ? distancematrix(). 
 
 }
 
@@ -186,7 +185,8 @@ Kaufman, L. and Rousseeuw, P.J. (1990). Finding Groups in Data: An Introduction 
 
 }
 
-\author{Katherine S. Pollard <kpollard@soe.ucsc.edu> and Mark J. van der Laan <laan@stat.berkeley.edu>}
+\author{Katherine S. Pollard <kpollard@wald.ucdavis.edu> and Mark J. van der Laan 
+<laan@stat.berkeley.edu>, with Greg Wall}
 
 \note{Thank you to Karen Vranizan <vranizan@uclink.berkeley.edu> for her input
 }
