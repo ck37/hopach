@@ -11,7 +11,7 @@
 \description{
 The function \code{distancematrix} is applied to a matrix of data to
 compute the pair wise distances between all rows of the matrix. In
-HOPACH Versions (>= 1.11.2) these distance functions are calculated in C,
+hopach versions >= 2.0.0 these distance functions are calculated in C,
 rather than R, to improve run time performance.
 function \code{distancevector} is applied to a matrix and a vector
 to compute the pair wise distances between each row of the matrix and 
@@ -52,17 +52,16 @@ vectmatrix(index, p)
 }
 
 \details{
-For cosine-angle and correlation (and their absolute values) these
-functions return the square root of the usual distance, for example
-as computed by the dist() function. Typically, this transformation makes
-the dissimilarity correspond more closely with the norm. Also, the 
-Euclidean distance is standardized by the sample size, so that the values
-produced are equal to the values from the dist() function divided by
-sqrt(n).
+In hopach versions <2.0.0, these functions returned the square root of 
+the usual distance for \code{d="cosangle"}, \code{d="abscosangle"}, 
+\code{d="cor"}, and \code{d="abscor"}. Typically, this transformation makes
+the dissimilarity correspond more closely with the norm. In order to 
+agree with the \code{dist} function, the square root is no longer used 
+in versions >=2.0.0. 
 }
 
 \value{
-	For HOPACH Versions (>= 1.11.2) \code{distancematrix}, a \code{hdist} 
+	For versions >= 2.0.0 \code{distancematrix}, a \code{hdist} 
 	object of of all pair wise distances between the rows of the data matrix 'X',
 	i.e. the value of \code{hdist[i,j]} is the distance between rows 'i' and 'j'
 	of 'X', as defined by 'd'.  A \code{hdist} object is an S4 class containing 
@@ -70,15 +69,14 @@ sqrt(n).
 	\item{Data}{ representing the lower triangle of the symmetric distance matrix.
 	
 	}
-	\item{Size}{
-
+	\item{Size}{ the number of objects (i.e. rows of the data 
+matrix).
 	}
-	\item{Labels}{
-
+	\item{Labels}{ labels for the objects, usually the numbers 1 to 
+Size.
 	}
-	\item{Method}{
-
-	}
+	\item{Call}{ the distance used in the call to 
+\code{distancematrix}.	}
 
 	A hdist object and can be converted to a matrix using \code{as.matrix(hdist)}.
 	(See \code{hdist} for more details.)
@@ -107,9 +105,11 @@ van der Laan, M.J. and Pollard, K.S. A new algorithm for hybrid hierarchical clu
 \url{http://www.stat.berkeley.edu/~laan/Research/Research_subpages/Papers/hopach.pdf}
 }
 
-\author{Katherine S. Pollard <kpollard@soe.ucsc.edu> and Mark J. van der Laan <laan@stat.berkeley.edu>}
+\author{Katherine S. Pollard <kpollard@soe.ucsc.edu> and Mark J. van der 
+Laan <laan@stat.berkeley.edu>, with Greg Walll}
 
-\section{Warning }{The correlation and absolute correlation distance functions call the \code{cor} function, and will therefore fail if there are missing values in the data and na.rm!=TRUE.
+\section{Warning }{The 
+correlation and absolute correlation distance functions call the \code{cor} function, and will therefore fail if there are missing values in the data and na.rm!=TRUE.
 }
 
 \seealso{\code{\link{hopach}}, \code{\link{correlationordering}}, \code{\link{disscosangle}}}
