@@ -1,7 +1,6 @@
 Package: hopach
 Version: 2.0.2
-Title: Hierarchical Ordered Partitioning and Collapsing 
-Hybrid (HOPACH)
+Title: Hierarchical Ordered Partitioning and Collapsing Hybrid (HOPACH)
 Author: Katherine S. Pollard, with Mark J. van der Laan <laan@stat.berkeley.edu> and Greg Wall
 Maintainer: Katherine S. Pollard <katherine.pollard@gladstone.ucsf.edu>
 Depends: R (>= 2.6.0), cluster, Biobase, methods
