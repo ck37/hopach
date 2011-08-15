@@ -414,13 +414,14 @@ mssinitlevel<-function(data, kmax=9, khigh=9, d="cosangle", dmat=NULL,
 	if(!is.matrix(data))
 		stop("First arg to mssinitlevel() must be a matrix")
 
-	p<-length(data[,1])
+	p<-nrow(data)
 
-        if(is.matrix(dmat))
+        if(!is.hdist(dmat)){
+           if(is.matrix(dmat) && nrow(dmat)==p && ncol(dmat)==p)
 		dmat<-as.hdist(dmat)
-
-	else
+	   else
 		dmat<-distancematrix(data,d=d)
+        }
 
 	if(dmat@Size != p)
 		stop("Data and distance matrix dimensions do not agree in mssinitlevel()")
@@ -970,16 +971,17 @@ hopach<-function(data, dmat=NULL, d="cosangle", clusters="best", K=15,
 	if(inherits(data,"ExpressionSet")) 
 		data<-exprs(data)
 	data<-as.matrix(data)
+        p<-nrow(data)
 
 	# Convert to hdist immediately #
 	if( is.null(dmat) ){
       	dmat<-distancematrix(data,d)
-	}else if( is.matrix(dmat) ){
+	}else if( is.matrix(dmat) && nrow(dmat)==p && ncol(dmat)==p){
 		dmat <- as(dmat,"hdist")
 	}else if( class(dmat) == "dist" ){
 		dmat <- hdist(Data=as.numeric(dmat), Size=attr(dmat,"Size"), Labels=(1:(attr(dmat,"Size"))), Call=as.character(attr(dmat,"call"))[3])
 	}else if(!is.hdist(dmat)){
-		stop("Distance matrix could not be created into hdist object.") 
+		stop("Distance matrix could not be transformed into hdist object.") 
 	}
 
 	if(K>15){
