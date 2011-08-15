@@ -1,5 +1,5 @@
 Package: hopach
-Version: 2.13.0
+Version: 2.13.1
 Title: Hierarchical Ordered Partitioning and Collapsing Hybrid (HOPACH)
 Author: Katherine S. Pollard, with Mark J. van der Laan <laan@stat.berkeley.edu> and Greg Wall
 Maintainer: Katherine S. Pollard <katherine.pollard@gladstone.ucsf.edu>
@@ -15,6 +15,6 @@ Description: The HOPACH clustering algorithm builds a hierarchical
         allows one to estimate the probability that each element
         belongs to each cluster (fuzzy clustering).
 License: GPL (>= 2)
-URL: http://www.stat.berkeley.edu/~laan/, http://docpollard.com/
+URL: http://www.stat.berkeley.edu/~laan/, http://docpollard.org/
 biocViews: Clustering
 
