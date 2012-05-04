@@ -443,7 +443,7 @@ mssinitlevel<-function(data, kmax=9, khigh=9, d="cosangle", dmat=NULL,
 		if(ord=="co")
 			medoidsord<-improveordering(medoidsdist)
 		if(ord=="clust"){
-			mpamobj<-pam(medoidsdist@Size,2,diss=TRUE)
+			mpamobj<-pam(medoidsdist@Data,2,diss=TRUE)
 			labelsmed<-mpamobj$clustering
 			medmed<-mpamobj$medoids
 			clussizes<-mpamobj$clusinfo[,1]
@@ -592,7 +592,7 @@ paircoll<-function(i,j,data,level,d="cosangle",dmat=NULL,newmed="medsil"){
 #note: this version of collap does not have silhbased arg: for use with MSS only (not silhouettes)
 collap<-function(data,level,d="cosangle",dmat=NULL,newmed="medsil"){
 	k<-level[[1]]
-	if(k<3){
+	if(k<3 && newmed!="nn"){
 		warning("Not enough medoids to use newmed='medsil' in collap() - \n using newmed='nn' instead \n") 
 		newmed<-"nn"
 	}
@@ -615,7 +615,11 @@ collap<-function(data,level,d="cosangle",dmat=NULL,newmed="medsil"){
 
 msscollap<-function(data,level,khigh,d="cosangle",dmat=NULL,newmed="medsil",within="med",between="med",impr=0){
 
-	newk<-level[[1]]
+	if(impr<0){
+          warning("impr must be positive - setting impr=0.")
+          impr<-0
+        }
+        newk<-level[[1]]
 	mss1<-labelstomss(level[[4]],dmat,khigh,within,between)
 	maxncoll<-max(0,newk-2)
         ncoll<-0
@@ -643,7 +647,10 @@ msscollap<-function(data,level,khigh,d="cosangle",dmat=NULL,newmed="medsil",with
 mssmulticollap<-function(data,level,khigh,d="cosangle",dmat=NULL,newmed="medsil",within="med",between="med",impr=0){
 	if(!is.matrix(data))
 		stop("First arg to mssmulticollap() must be a matrix")
-
+	if(impr<0){
+          warning("impr must be positive - setting impr=0.")
+          impr<-0
+        }
 	medoids<-level[[2]]
 	medoidsdata<-data[medoids,]
 	if(sum(is.na(medoidsdata))>0) 
