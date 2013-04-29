@@ -7,6 +7,8 @@
 \alias{as.hdist,matrix-method}
 \alias{as.matrix,hdist-method}
 \alias{as.vector,hdist,missing-method}
+\alias{generic,as.vector,hdist-method}
+
 \alias{[,hdist-method}
 \alias{coerce,matrix,hdist-method}
 \alias{coerce,hdist,matrix-method}
@@ -45,7 +47,7 @@
     \item{hdist}{\code{signature{Data = "numeric", Size = "numeric", Labels = "numeric", Call = "character"}}: Create a new hdist object. }
     \item{as.hdist}{\code{signature{from = "matrix"}}: Converts a matrix to a hdist object. }
     \item{as.matrix}{\code{signature(x = "hdist")}: Converts a hdist object to a matrix. }
-    \item{as.vector}{\code{signature(x = "hdist", mode = "missing")}: Returns the hdist object as a vector. }
+    \item{as.vector}{\code{signature(x = "hdist")}: Returns the hdist object as a vector. }
     \item{[}{\code{signature(x = "hdist")}: Subsetting function for hdist objects. See examples and warning. }
     \item{coerce}{\code{signature(from = "matrix", to = "hdist")}: Converts a matrix to a hdist object. }
     \item{coerce}{\code{signature(from = "hdist", to = "matrix")}: Converts a hdist object to a matrix. }

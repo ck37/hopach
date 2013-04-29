@@ -34,7 +34,7 @@ setClass( "hdist", representation(Data = "numeric",
 ################################################################################
 #                  HDIST get functions					       #
 ################################################################################
-setMethod("as.vector", signature(x="hdist", mode="missing"), function(x){
+setMethod("as.vector", signature(x="hdist"), function(x){
 	return(x@Data) 
 })
 

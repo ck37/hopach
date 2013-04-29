@@ -1,6 +1,7 @@
 useDynLib(hopach)
 
 import(methods)
+import(BiocGenerics)
 importMethodsFrom(Biobase, exprs)
 importFrom(cluster, pam)
 importFrom(graphics, abline, axis, barplot, box, image, mtext, par,
