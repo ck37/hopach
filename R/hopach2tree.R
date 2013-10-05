@@ -21,7 +21,7 @@ makeTree<-function(labels,ord,medoids,dist,side="GENE"){
 	labels<-labels[ord]
 	dist<-dist[ord,ord]
 	maxnode<-max(c(max(table(labels)),9))
-	treematrix<-cbind(data.frame(node=NA,label=0,avgdist=0,branch=0,medoid=0),matrix(NA,nc=maxnode,dimnames=list(NULL,paste("child",1:maxnode,sep=""))))
+	treematrix<-cbind(data.frame(node=NA,label=0,avgdist=0,branch=0,medoid=0),matrix(NA,ncol=maxnode,dimnames=list(NULL,paste("child",1:maxnode,sep=""))))
 	D<-digits(labels)
 	if(D<2)
 		stop("Can not run makeTree() with single digit labels")
@@ -124,7 +124,7 @@ hopach2tree<-function(data,file="HOPACH",hopach.genes=NULL,hopach.arrays=NULL,di
 	n<-length(data[1,])
 	if(is.null(hopach.genes)){
 		row.labels<-1:p
-		row.medoids<-matrix(rep(row.labels,2),nc=2,dimnames=list(NULL,c("label","medoid")))
+		row.medoids<-matrix(rep(row.labels,2),ncol=2,dimnames=list(NULL,c("label","medoid")))
 		row.ord<-1:p
 	}
 	else{
@@ -134,7 +134,7 @@ hopach2tree<-function(data,file="HOPACH",hopach.genes=NULL,hopach.arrays=NULL,di
 	}
 	if(is.null(hopach.arrays)){
 		col.labels<-1:n
-		col.medoids<-matrix(rep(col.labels,2),nc=2,dimnames=list(NULL,c("label","medoid")))
+		col.medoids<-matrix(rep(col.labels,2),ncol=2,dimnames=list(NULL,c("label","medoid")))
 		col.ord<-1:n
 	}
 	else{
@@ -209,8 +209,8 @@ hopach2tree<-function(data,file="HOPACH",hopach.genes=NULL,hopach.arrays=NULL,di
 	else
 		cat("Only one level in array tree: no .atr file created \n")
 	if(digits(row.labels[1])>1)
-		write.table(matrix(rbind(cdt,c("EWEIGHT","","","",array.wts[col.ord]),cbind(paste("GENE",1:p,"X",sep="")[row.ord],dimnames(data.frame(data))[[1]][row.ord],gene.names[row.ord],gene.wts[row.ord],data[row.ord,col.ord])),nr=(cdtsize+p+1),dimnames=list(NULL,NULL)),paste(file,".cdt",sep=""),quote=FALSE,sep="\t",row.names=FALSE,col.names=FALSE)
+		write.table(matrix(rbind(cdt,c("EWEIGHT","","","",array.wts[col.ord]),cbind(paste("GENE",1:p,"X",sep="")[row.ord],dimnames(data.frame(data))[[1]][row.ord],gene.names[row.ord],gene.wts[row.ord],data[row.ord,col.ord])),nrow=(cdtsize+p+1),dimnames=list(NULL,NULL)),paste(file,".cdt",sep=""),quote=FALSE,sep="\t",row.names=FALSE,col.names=FALSE)
 	else
-		write.table(matrix(rbind(cdt,c("EWEIGHT","","",array.wts[col.ord]),cbind(dimnames(data.frame(data))[[1]][row.ord],gene.names[row.ord],gene.wts[row.ord],data[row.ord,col.ord])),nr=(cdtsize+p+1),dimnames=list(NULL,NULL)),paste(file,".cdt",sep=""),quote=FALSE,sep="\t",row.names=FALSE,col.names=FALSE)
+		write.table(matrix(rbind(cdt,c("EWEIGHT","","",array.wts[col.ord]),cbind(dimnames(data.frame(data))[[1]][row.ord],gene.names[row.ord],gene.wts[row.ord],data[row.ord,col.ord])),nrow=(cdtsize+p+1),dimnames=list(NULL,NULL)),paste(file,".cdt",sep=""),quote=FALSE,sep="\t",row.names=FALSE,col.names=FALSE)
 	options(digits=olddig)
 }
