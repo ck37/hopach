@@ -16,6 +16,7 @@
 \alias{labels,hdist-method}
 \alias{length,hdist-method}
 \alias{show,hdist-method}
+\alias{as.vector,hdist-method}
 
 \title{Class "hdist" - S4 class to hold distance matrices.}
 \description{	
