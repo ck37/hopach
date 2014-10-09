@@ -4,8 +4,8 @@ import(methods)
 import(BiocGenerics)
 importMethodsFrom(Biobase, exprs)
 importFrom(cluster, pam)
-importFrom(graphics, abline, axis, barplot, box, image, mtext, par,
-           plot, text)
+importFrom(graphics, abline, axis, barplot, box, mtext, par, plot,
+           text)
 importFrom(grDevices, heat.colors, rainbow)
 importFrom(stats, cor, dist, median)
 importFrom(utils, write.table)
