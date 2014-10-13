@@ -1,0 +1,13 @@
+citHeader("To cite package hopach in publications use:")
+
+citEntry(
+ entry="Article",
+ title="Hybrid clustering of gene expression data with visualization and the bootstrap",
+ journal="Journal of Statistical Planning and Infererence",
+ volume= "117",
+ pages="275-303",
+ year="2003",
+ author=personList(as.person("Mark J. van der Laan"),
+	as.person("Katherine S. Pollard")),
+ textVersion="M.J. van der Laan, K.S. Pollard (2003). Hybrid clustering of gene expression data with visualization and the bootstrap. Journal of Statistical Planning and Inference, 117: 275-303.")
+
